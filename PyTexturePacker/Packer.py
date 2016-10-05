@@ -1,87 +1,228 @@
-import random
 import math
+import sys
+from Rect import Rect
+
+MAX_RANK = 2 ** 32
+SIZE_SEQUENCE = [2**i for i in range(32)]
 
 
-def cut_rect(main_rect, sub_rect):
-    main_l, main_t, main_r, main_b = main_rect
-    sub_l, sub_t, sub_r, sub_b = sub_rect
+class MaxRects(object):
+    """
+    the max rects data
+    """
 
-    if main_b < sub_t or main_l > sub_r or main_r < sub_l or main_t > sub_b:
-        return [main_rect, ]
+    EXPAND_BOTH = 0
+    EXPAND_WIDTH = 1
+    EXPAND_HEIGHT = 2
+    EXPAND_SHORT_SIDE = 3
+    EXPAND_LONG_SIDE = 4
 
-    sub_l = main_l if sub_l < main_l else sub_l
-    sub_t = main_t if sub_t < main_t else sub_t
-    sub_r = main_r if sub_r > main_r else sub_r
-    sub_b = main_b if sub_b > main_b else sub_b
+    def __init__(self, width=1, height=1):
+        self.size = (width, height)
 
-    l = (main_t, main_l, main_b, sub_l) if main_l < sub_l else None
-    t = (main_t, main_l, sub_t, main_r) if main_t < sub_t else None
-    r = (main_t, sub_r, main_b, main_r) if main_r > sub_r else None
-    b = (sub_b, main_l, main_b, main_r) if main_b > sub_b else None
+        self.max_rect_list = [Rect(0, 0, width, height)]
+        self.image_rect_list = []
 
-    return filter(lambda x: x, (l, t, r, b))
+    def expand(self, method=EXPAND_BOTH):
+        old_size = self.size
+        if method == MaxRects.EXPAND_BOTH:
+            self.size = (self.size[0] * 2, self.size[1] * 2)
+        elif method == MaxRects.EXPAND_WIDTH:
+            self.size = (self.size[0] * 2, self.size[1])
+        elif method == MaxRects.EXPAND_HEIGHT:
+            self.size = (self.size[0], self.size[1] * 2)
+        elif method == MaxRects.EXPAND_SHORT_SIDE:
+            if self.size[0] <= self.size[1]:
+                self.size = (self.size[0] * 2, self.size[1])
+            else:
+                self.size = (self.size[0], self.size[1] * 2)
+        elif method == MaxRects.EXPAND_LONG_SIDE:
+            if self.size[0] >= self.size[1]:
+                self.size = (self.size[0] * 2, self.size[1])
+            else:
+                self.size = (self.size[0], self.size[1] * 2)
+        else:
+            raise ValueError("Unexpected Method")
 
+        for max_rect in self.max_rect_list:
+            if max_rect.right == old_size[0]:
+                max_rect.right = self.size[0]
+            if max_rect.bottom == old_size[1]:
+                max_rect.bottom = self.size[1]
 
-def is_in_rect(main_rect, sub_rect):
-    main_l, main_t, main_r, main_b = main_rect
-    sub_l, sub_t, sub_r, sub_b = sub_rect
+        if old_size[0] != self.size[0]:
+            new_rect = Rect(old_size[0], 0, self.size[0] - old_size[0], self.size[1])
+            self.max_rect_list.append(new_rect)
 
-    return main_l <= sub_l and main_t <= sub_t and main_r >= sub_r and main_b >= sub_b
+        if old_size[1] != self.size[1]:
+            new_rect = Rect(0, old_size[1], self.size[0], self.size[1] - old_size[1])
+            self.max_rect_list.append(new_rect)
 
+        self.max_rect_list = filter(self._max_rect_list_pruning, self.max_rect_list)
 
-def rank():
-    pass
+    def cut(self, main_rect, sub_rect):
+        if not main_rect.is_overlaped(sub_rect):
+            return [main_rect, ]
 
+        result = []
+        if main_rect.left < sub_rect.left:
+            tmp = main_rect.clone()
+            tmp.right = sub_rect.left# - 1
+            result.append(tmp)
+        if main_rect.top < sub_rect.top:
+            tmp = main_rect.clone()
+            tmp.bottom = sub_rect.top# - 1
+            result.append(tmp)
+        if main_rect.right > sub_rect.right:
+            tmp = main_rect.clone()
+            tmp.left = sub_rect.right# + 1
+            result.append(tmp)
+        if main_rect.bottom > sub_rect.bottom:
+            tmp = main_rect.clone()
+            tmp.top = sub_rect.bottom# + 1
+            result.append(tmp)
 
-def expand(max_rects, cur):
-    pass
+        return result
 
+    def rank(self, main_rect, sub_rect):
+        """
+        BSSF
+        :param main_rect:
+        :param sub_rect:
+        :return:
+        """
+        tmp = min(main_rect.width - sub_rect.width, main_rect.height - sub_rect.height)
+        assert tmp < MAX_RANK
+        if tmp < 0:
+            return MAX_RANK
+        else:
+            return tmp
 
-def select_best(max_rect_list, img):
-    img_w, img_h = img
-    for i, max_rect in enumerate(max_rect_list):
-        w, h = max_rect[2] - max_rect[0], max_rect[3] - max_rect[1]
-        print(w, h, img_w, img_h)
-        if w >= img_w and h >= img_h:
-            return i
-    return -1
+    def find_best_rank(self, image_rect):
+        best_rank = MAX_RANK
+        best_index = -1
+        for i, rect in enumerate(self.max_rect_list):
+            rank = self.rank(rect, image_rect)
+            if rank < best_rank:
+                best_rank = rank
+                best_index = i
+        return best_index, best_rank
 
-
-def max_rects_bin_Pack(max_rect, imgs):
-    max_rect_list = [max_rect]
-    _imgs = []
-
-    for img in imgs:
-        print(max_rect_list)
-        index = select_best(max_rect_list, img)
-
-        if index == -1:
-            print("Can't not fit.")
-            return
-
-        x, y = max_rect_list[index][:2]
-        w, h = img
-        img_rect = (x, y, x + w, y + h)
-        _imgs.append(img_rect)
+    def place_image_rect(self, rect_index, image_rect):
+        rect = self.max_rect_list[rect_index]
+        image_rect.x, image_rect.y = rect.x, rect.y
 
         _max_rect_list = []
-        for max_rect in max_rect_list:
-            _max_rect_list.extend(cut_rect(max_rect, img_rect))
+        for i, rect in enumerate(self.max_rect_list):
+            _max_rect_list.extend(self.cut(rect, image_rect))
 
-        max_rect_list = _max_rect_list
+        self.max_rect_list = _max_rect_list
+        print("B", len(self.max_rect_list))
+        self.max_rect_list = filter(self._max_rect_list_pruning, _max_rect_list)
+        print("F", len(self.max_rect_list))
+        self.image_rect_list.append(image_rect)
 
-    return max_rect_list, _imgs
+    def _max_rect_list_pruning(self, rect):
+        for max_rect in self.max_rect_list:
+            if rect != max_rect and rect in max_rect:
+                return False
+
+        return True
 
 
-def gen_rect_data():
-    return [random.randint(0, 100), random.randint(0, 100)]
+def load_images(dir_path):
+    import os
+    from ImageRect import ImageRect
+    image_rect_list = []
+    for root, dirs, files in os.walk(dir_path):
+        for f in files:
+            file_path = os.path.join(root, f)
+            _, ext = os.path.splitext(f)
+            if ext == ".png":
+                image_rect = ImageRect(file_path)
+                image_rect_list.append(image_rect)
+
+    return image_rect_list
+
+
+def dump_max_rect(max_rect):
+    from PIL import Image
+    packed_image = Image.new('RGBA', max_rect.size, 0xff)
+
+    for image_rect in max_rect.image_rect_list:
+        image = image_rect.image.crop()
+        if image_rect.rotated:
+            image = image.transpose(Image.ROTATE_90)
+        packed_image.paste(image, (image_rect.left, image_rect.top, image_rect.right, image_rect.bottom))
+
+    return packed_image
+
+
+def rect_print(rect):
+    print(rect.x, rect.y, rect.width, rect.height)
+
+
+def calculate_area(image_rect_list):
+    area = 0
+    for image_rect in image_rect_list:
+        area += image_rect.area
+    return
+
+
+def cal_init_size(area, force_square=False):
+    if force_square:
+        for l in SIZE_SEQUENCE:
+            if area <= l*l:
+                return tuple(l, l)
+    else:
+        for l in SIZE_SEQUENCE:
+            if area <= l*(l/2):
+                return tuple(l, l/2)
+            if area <= l*l:
+                return tuple(l, l)
+
+    raise ValueError("too larger size.")
+
+
+def pack(image_rect_list):
+    max_rect = MaxRects()
+    max_rect_list = [max_rect]
+
+    image_rect_list = sorted(image_rect_list, key=lambda x: max(x.width, x.height), reverse=True)
+
+    for image_rect in image_rect_list:
+        image_rect_r = image_rect.clone()
+        image_rect_r.rotate()
+        index, rank = max_rect.find_best_rank(image_rect)
+        index_r, rank_r = max_rect.find_best_rank(image_rect_r)
+
+        while MAX_RANK == rank_r and MAX_RANK == rank:
+            max_rect.expand(MaxRects.EXPAND_SHORT_SIDE)
+            index, rank = max_rect.find_best_rank(image_rect)
+            index_r, rank_r = max_rect.find_best_rank(image_rect_r)
+
+        if rank_r < rank:
+            image_rect.rotate()
+            index = index_r
+
+        max_rect.place_image_rect(index, image_rect)
+        # dump_max_rect(max_rect).show()
+
+    return max_rect
 
 
 def main():
-    a = (0, 0, 100, 100)
-    b = ((50, 100), (10, 100)) #(20, 20), )
-    print(max_rects_bin_Pack(a, b)[1])
+    image_rect_list = load_images("test_case/")
+    # for image_rect in image_rect_list:
+    #     print(image_rect.width, image_rect.height)
 
+    max_rect = pack(image_rect_list)
+    print("A", max_rect.size, len(max_rect.image_rect_list))
+    packed_image = dump_max_rect(max_rect)
+    print(len(max_rect.max_rect_list))
+    for rect in max_rect.max_rect_list:
+        rect_print(rect)
+    packed_image.show()
 
 if __name__ == '__main__':
     main()
