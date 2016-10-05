@@ -67,19 +67,19 @@ class MaxRects(object):
         result = []
         if main_rect.left < sub_rect.left:
             tmp = main_rect.clone()
-            tmp.right = sub_rect.left# - 1
+            tmp.right = sub_rect.left - 1
             result.append(tmp)
         if main_rect.top < sub_rect.top:
             tmp = main_rect.clone()
-            tmp.bottom = sub_rect.top# - 1
+            tmp.bottom = sub_rect.top - 1
             result.append(tmp)
         if main_rect.right > sub_rect.right:
             tmp = main_rect.clone()
-            tmp.left = sub_rect.right# + 1
+            tmp.left = sub_rect.right + 1
             result.append(tmp)
         if main_rect.bottom > sub_rect.bottom:
             tmp = main_rect.clone()
-            tmp.top = sub_rect.bottom# + 1
+            tmp.top = sub_rect.bottom + 1
             result.append(tmp)
 
         return result
@@ -107,6 +107,18 @@ class MaxRects(object):
                 best_rank = rank
                 best_index = i
         return best_index, best_rank
+
+    def find_best_rank_with_rotate(self, image_rect):
+        image_rect_r = image_rect.clone()
+        image_rect_r.rotate()
+
+        index, rank = self.find_best_rank(image_rect)
+        index_r, rank_r = self.find_best_rank(image_rect_r)
+
+        if rank < rank_r:
+            return index, rank, False
+        else:
+            return index_r, rank, True
 
     def place_image_rect(self, rect_index, image_rect):
         rect = self.max_rect_list[rect_index]
@@ -166,10 +178,10 @@ def calculate_area(image_rect_list):
     area = 0
     for image_rect in image_rect_list:
         area += image_rect.area
-    return
+    return area
 
 
-def cal_init_size(area, min_side_len=0, force_square=False):
+def cal_init_size(area, min_side_len=0, max_side_len=SIZE_SEQUENCE[-1], force_square=False):
     start_i = 0
 
     for i, l in enumerate(SIZE_SEQUENCE):
@@ -182,7 +194,7 @@ def cal_init_size(area, min_side_len=0, force_square=False):
             if i < start_i:
                 continue
             if area <= l*l:
-                return tuple((l, l))
+                return tuple((l if l < max_side_len else max_side_len, l if l < max_side_len else max_side_len))
     else:
         for i, l in enumerate(SIZE_SEQUENCE):
             if i < start_i:
@@ -190,49 +202,95 @@ def cal_init_size(area, min_side_len=0, force_square=False):
             for j in range(0, i+1):
                 l2 = SIZE_SEQUENCE[j]
                 if area <= l*l2:
-                    return tuple((l, l2))
+                    return tuple((l if l < max_side_len else max_side_len, l2 if l2 < max_side_len else max_side_len))
 
-    raise ValueError("too larger size.")
+    return tuple((max_side_len, max_side_len))
 
 
-def pack(image_rect_list):
-    max_rect = MaxRects()
-    max_rect_list = [max_rect]
+def pack(image_rect_list, max_size):
+    min_size = 0
+    for image_rect in image_rect_list:
+        tmp = max(image_rect.width, image_rect.height)
+        if tmp > min_size:
+            min_size = tmp
+
+    if min_size > max_size:
+        raise ValueError("size of image is larger than max_size.")
+
+    max_rects_list = []
+
+    area = calculate_area(image_rect_list)
+    w, h = cal_init_size(area, min_size, max_size)
+
+    max_rects_list.append(MaxRects(w, h))
+
+    area = area - w * h
+    while area > 0:
+        w, h = cal_init_size(area, max_side_len=max_size)
+        area = area - w * h
+        max_rects_list.append(MaxRects(w, h))
 
     image_rect_list = sorted(image_rect_list, key=lambda x: max(x.width, x.height), reverse=True)
 
     for image_rect in image_rect_list:
         image_rect_r = image_rect.clone()
         image_rect_r.rotate()
-        index, rank = max_rect.find_best_rank(image_rect)
-        index_r, rank_r = max_rect.find_best_rank(image_rect_r)
 
-        while MAX_RANK == rank_r and MAX_RANK == rank:
-            max_rect.expand(MaxRects.EXPAND_SHORT_SIDE)
-            index, rank = max_rect.find_best_rank(image_rect)
-            index_r, rank_r = max_rect.find_best_rank(image_rect_r)
+        best_max_rects = -1
+        best_index = -1
+        best_rank = MAX_RANK
+        best_rotated = False
 
-        if rank_r < rank:
+        for i, max_rect in enumerate(max_rects_list):
+            index, rank, rotated = max_rect.find_best_rank_with_rotate(image_rect)
+
+            if rank < best_rank:
+                best_max_rects = i
+                best_rank = rank
+                best_index = index
+                best_rotated = rotated
+
+        if MAX_RANK == best_rank:
+            for i, max_rect in enumerate(max_rects_list):
+                while MAX_RANK == best_rank:
+                    if max_rect.size[0] <= max_size/2 or max_rect.size[1] <= max_size/2:
+                        max_rect.expand(MaxRects.EXPAND_SHORT_SIDE)
+                        best_max_rects = i
+                        best_index, best_rank, best_rotated = max_rect.find_best_rank_with_rotate(image_rect)
+                    else:
+                        break
+                if MAX_RANK != best_rank:
+                    break
+            if MAX_RANK == best_rank:
+                print("Add new MaxRects")
+                max_rects_list.append(MaxRects())
+                best_max_rects = len(max_rects_list) - 1
+                best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank_with_rotate(image_rect)
+                while MAX_RANK == best_rank:
+                    max_rects_list[-1].expand(MaxRects.EXPAND_SHORT_SIDE)
+                    best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank_with_rotate(image_rect)
+
+        if best_rotated:
             image_rect.rotate()
-            index = index_r
 
-        max_rect.place_image_rect(index, image_rect)
+        max_rects_list[best_max_rects].place_image_rect(best_index, image_rect)
         # dump_max_rect(max_rect).show()
 
-    return max_rect
+    return max_rects_list
 
 
 def main():
     # print cal_init_size(128*128, 256, True)
-    # image_rect_list = load_images("test_case/")
+    image_rect_list = load_images("test_case/")
     # for image_rect in image_rect_list:
-    #     print(image_rect.width, image_rect.height)
-    #
-    # max_rect = pack(image_rect_list)
-    # packed_image = dump_max_rect(max_rect)
+    #    print(image_rect.width, image_rect.height)
+
+    max_rect_list = pack(image_rect_list, 64)
+    for max_rect in max_rect_list:
+        packed_image = dump_max_rect(max_rect)
     # for rect in max_rect.max_rect_list:
     #     rect_print(rect)
-    # packed_image.show()
+        packed_image.show()
 
 if __name__ == '__main__':
     main()
