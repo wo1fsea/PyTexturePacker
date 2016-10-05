@@ -3,7 +3,7 @@ import sys
 from Rect import Rect
 
 MAX_RANK = 2 ** 32
-SIZE_SEQUENCE = [2**i for i in range(32)]
+SIZE_SEQUENCE = [2**ind for ind in range(32)]
 
 
 class MaxRects(object):
@@ -169,17 +169,28 @@ def calculate_area(image_rect_list):
     return
 
 
-def cal_init_size(area, force_square=False):
+def cal_init_size(area, min_side_len=0, force_square=False):
+    start_i = 0
+
+    for i, l in enumerate(SIZE_SEQUENCE):
+        if l >= min_side_len:
+            start_i = i
+            break
+
     if force_square:
-        for l in SIZE_SEQUENCE:
+        for i, l in enumerate(SIZE_SEQUENCE):
+            if i < start_i:
+                continue
             if area <= l*l:
-                return tuple(l, l)
+                return tuple((l, l))
     else:
-        for l in SIZE_SEQUENCE:
-            if area <= l*(l/2):
-                return tuple(l, l/2)
-            if area <= l*l:
-                return tuple(l, l)
+        for i, l in enumerate(SIZE_SEQUENCE):
+            if i < start_i:
+                continue
+            for j in range(0, i+1):
+                l2 = SIZE_SEQUENCE[j]
+                if area <= l*l2:
+                    return tuple((l, l2))
 
     raise ValueError("too larger size.")
 
@@ -212,17 +223,16 @@ def pack(image_rect_list):
 
 
 def main():
-    image_rect_list = load_images("test_case/")
+    # print cal_init_size(128*128, 256, True)
+    # image_rect_list = load_images("test_case/")
     # for image_rect in image_rect_list:
     #     print(image_rect.width, image_rect.height)
-
-    max_rect = pack(image_rect_list)
-    print("A", max_rect.size, len(max_rect.image_rect_list))
-    packed_image = dump_max_rect(max_rect)
-    print(len(max_rect.max_rect_list))
-    for rect in max_rect.max_rect_list:
-        rect_print(rect)
-    packed_image.show()
+    #
+    # max_rect = pack(image_rect_list)
+    # packed_image = dump_max_rect(max_rect)
+    # for rect in max_rect.max_rect_list:
+    #     rect_print(rect)
+    # packed_image.show()
 
 if __name__ == '__main__':
     main()
