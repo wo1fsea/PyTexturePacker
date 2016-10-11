@@ -10,9 +10,11 @@ class ImageRect(Rect):
     def __init__(self, image_path=None):
         super(ImageRect, self).__init__(0, 0, 0, 0)
         self.image = None
+        self.image_path = None
         self._rotated = False
         if image_path:
             self.load_image(image_path)
+            self.image_path = image_path
 
     @property
     def rotated(self):
@@ -20,6 +22,7 @@ class ImageRect(Rect):
 
     def load_image(self, image_path):
         self.image = Image.open(image_path)
+        self.image_path = image_path
         self.x, self.y = 0, 0
         self.width, self.height = self.image.size
 
