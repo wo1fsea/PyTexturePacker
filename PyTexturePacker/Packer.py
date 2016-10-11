@@ -3,7 +3,7 @@ import sys
 from Rect import Rect
 
 MAX_RANK = 2 ** 32
-SIZE_SEQUENCE = [2**ind for ind in range(32)]
+SIZE_SEQUENCE = [2 ** ind for ind in range(32)]
 
 
 class MaxRects(object):
@@ -158,6 +158,42 @@ def load_images(dir_path):
 
 
 def dump_max_rect(max_rect):
+    return dump_image_max_rect(max_rect), dump_plist_max_rect(max_rect)
+
+
+def dump_plist_max_rect(max_rect):
+    plist_data = {}
+
+    frames = {}
+    for image_rect in max_rect.image_rect_list:
+        path = image_rect.image_path
+        frames[path] = dict(
+            width=int(image_rect.width),
+            height=int(image_rect.height),
+            originalWidth=int(image_rect.width),
+            originalHeight=int(image_rect.height),
+            x=int(image_rect.x),
+            y=int(image_rect.y),
+            offsetX=0.0,
+            offsetY=0.0,
+        )
+
+    plist_data["frames"] = frames
+    plist_data["metadata"] = dict(
+        format=int(0),
+        textureFileName="",
+        realTextureFileName="",
+        size="{%d,%d}",
+    )
+    plist_data["texture"] = dict(
+        width=image_rect.width,
+        height=image_rect.height,
+    )
+
+    return plist_data
+
+
+def dump_image_max_rect(max_rect):
     from PIL import Image
     packed_image = Image.new('RGBA', max_rect.size, 0xff)
 
@@ -193,15 +229,15 @@ def cal_init_size(area, min_side_len=0, max_side_len=SIZE_SEQUENCE[-1], force_sq
         for i, l in enumerate(SIZE_SEQUENCE):
             if i < start_i:
                 continue
-            if area <= l*l:
+            if area <= l * l:
                 return tuple((l if l < max_side_len else max_side_len, l if l < max_side_len else max_side_len))
     else:
         for i, l in enumerate(SIZE_SEQUENCE):
             if i < start_i:
                 continue
-            for j in range(0, i+1):
+            for j in range(0, i + 1):
                 l2 = SIZE_SEQUENCE[j]
-                if area <= l*l2:
+                if area <= l * l2:
                     return tuple((l if l < max_side_len else max_side_len, l2 if l2 < max_side_len else max_side_len))
 
     return tuple((max_side_len, max_side_len))
@@ -253,7 +289,7 @@ def pack(image_rect_list, max_size):
         if MAX_RANK == best_rank:
             for i, max_rect in enumerate(max_rects_list):
                 while MAX_RANK == best_rank:
-                    if max_rect.size[0] <= max_size/2 or max_rect.size[1] <= max_size/2:
+                    if max_rect.size[0] <= max_size / 2 or max_rect.size[1] <= max_size / 2:
                         max_rect.expand(MaxRects.EXPAND_SHORT_SIDE)
                         best_max_rects = i
                         best_index, best_rank, best_rotated = max_rect.find_best_rank_with_rotate(image_rect)
@@ -288,9 +324,10 @@ def main():
     max_rect_list = pack(image_rect_list, 64)
     for max_rect in max_rect_list:
         packed_image = dump_max_rect(max_rect)
-    # for rect in max_rect.max_rect_list:
-    #     rect_print(rect)
+        # for rect in max_rect.max_rect_list:
+        #     rect_print(rect)
         packed_image.show()
+
 
 if __name__ == '__main__':
     main()
