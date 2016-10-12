@@ -60,26 +60,26 @@ class MaxRects(object):
 
         self.max_rect_list = filter(self._max_rect_list_pruning, self.max_rect_list)
 
-    def cut(self, main_rect, sub_rect):
+    def cut(self, main_rect, sub_rect, border=0):
         if not main_rect.is_overlaped(sub_rect):
             return [main_rect, ]
 
         result = []
         if main_rect.left < sub_rect.left:
             tmp = main_rect.clone()
-            tmp.right = sub_rect.left - 1
+            tmp.right = sub_rect.left - border
             result.append(tmp)
         if main_rect.top < sub_rect.top:
             tmp = main_rect.clone()
-            tmp.bottom = sub_rect.top - 1
+            tmp.bottom = sub_rect.top - border
             result.append(tmp)
         if main_rect.right > sub_rect.right:
             tmp = main_rect.clone()
-            tmp.left = sub_rect.right + 1
+            tmp.left = sub_rect.right + border
             result.append(tmp)
         if main_rect.bottom > sub_rect.bottom:
             tmp = main_rect.clone()
-            tmp.top = sub_rect.bottom + 1
+            tmp.top = sub_rect.bottom + border
             result.append(tmp)
 
         return result
@@ -308,6 +308,7 @@ def pack(image_rect_list, max_size):
     return max_rects_list
 
 
+
 def main():
     # print cal_init_size(128*128, 256, True)
     image_rect_list = load_images("test_case/")
@@ -316,11 +317,11 @@ def main():
 
     max_rect_list = pack(image_rect_list, 64)
     for max_rect in max_rect_list:
-        packed_image = dump_max_rect(max_rect)
+        packed_image, packed_plist = dump_max_rect(max_rect)
+        print(packed_plist)
         # for rect in max_rect.max_rect_list:
         #     rect_print(rect)
         packed_image.show()
-
 
 if __name__ == '__main__':
     main()
