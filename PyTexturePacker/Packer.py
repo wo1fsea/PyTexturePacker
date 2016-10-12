@@ -58,7 +58,7 @@ class MaxRects(object):
             new_rect = Rect(0, old_size[1], self.size[0], self.size[1] - old_size[1])
             self.max_rect_list.append(new_rect)
 
-        self.max_rect_list = filter(self._max_rect_list_pruning, self.max_rect_list)
+        self.max_rect_list = list(filter(self._max_rect_list_pruning, self.max_rect_list))
 
     def cut(self, main_rect, sub_rect, border=0):
         if not main_rect.is_overlaped(sub_rect):
@@ -129,9 +129,7 @@ class MaxRects(object):
             _max_rect_list.extend(self.cut(rect, image_rect))
 
         self.max_rect_list = _max_rect_list
-        print("B", len(self.max_rect_list))
-        self.max_rect_list = filter(self._max_rect_list_pruning, _max_rect_list)
-        print("F", len(self.max_rect_list))
+        self.max_rect_list = list(filter(self._max_rect_list_pruning, _max_rect_list))
         self.image_rect_list.append(image_rect)
 
     def _max_rect_list_pruning(self, rect):
@@ -307,7 +305,11 @@ def pack(image_rect_list, max_size):
 
     return max_rects_list
 
+def dump_plist_file(data_dict, fileName):
+    import plistlib
 
+    with open(fileName, 'wb') as fp:
+        plistlib.dump(data_dict, fp)
 
 def main():
     # print cal_init_size(128*128, 256, True)
@@ -316,12 +318,18 @@ def main():
     #    print(image_rect.width, image_rect.height)
 
     max_rect_list = pack(image_rect_list, 64)
-    for max_rect in max_rect_list:
+    for i, max_rect in enumerate(max_rect_list):
         packed_image, packed_plist = dump_max_rect(max_rect)
-        print(packed_plist)
+        dump_plist_file(packed_plist, "%d.plist" % i)
         # for rect in max_rect.max_rect_list:
         #     rect_print(rect)
         packed_image.show()
 
 if __name__ == '__main__':
     main()
+
+
+class Packer:
+    def __init__(self, bg_color, texture_format, max_width, max_height, enable_rotated,
+                 border_padding, shape_padding, inner_padding):
+        pass
