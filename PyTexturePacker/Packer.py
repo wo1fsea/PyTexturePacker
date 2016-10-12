@@ -168,26 +168,19 @@ def dump_plist_max_rect(max_rect):
     for image_rect in max_rect.image_rect_list:
         path = image_rect.image_path
         frames[path] = dict(
-            width=int(image_rect.width),
-            height=int(image_rect.height),
-            originalWidth=int(image_rect.width),
-            originalHeight=int(image_rect.height),
-            x=int(image_rect.x),
-            y=int(image_rect.y),
-            offsetX=0.0,
-            offsetY=0.0,
+            frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, image_rect.width, image_rect.height),
+            offset="{%d,%d}" % (0,0),
+            rotated=bool(image_rect.rotate),
+            sourceColorRect="{{%d,%d},{%d,%d}}" % (0, 0, image_rect.width, image_rect.height),
+            sourceSize="{%d,%d}" % (image_rect.width, image_rect.height),
         )
 
     plist_data["frames"] = frames
     plist_data["metadata"] = dict(
-        format=int(0),
+        format=int(2),
         textureFileName="",
         realTextureFileName="",
-        size="{%d,%d}",
-    )
-    plist_data["texture"] = dict(
-        width=image_rect.width,
-        height=image_rect.height,
+        size="{%d,%d}" % max_rect.size,
     )
 
     return plist_data
