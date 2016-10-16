@@ -1,5 +1,6 @@
-from Rect import Rect
 from PIL import Image
+
+from .Rect import Rect
 
 
 class ImageRect(Rect):
@@ -9,6 +10,7 @@ class ImageRect(Rect):
 
     def __init__(self, image_path=None):
         super(ImageRect, self).__init__(0, 0, 0, 0)
+
         self.image = None
         self.image_path = None
         self._rotated = False
