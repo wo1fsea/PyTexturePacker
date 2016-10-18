@@ -71,7 +71,7 @@ class MaxRectsBinPacker(PackerInterface):
         output_image_list = []
 
         for i, max_rect in enumerate(max_rect_list):
-            packed_image = max_rect.dump_image()
+            packed_image = max_rect.dump_image(self.bg_color)
             packed_plist = max_rect.dump_plist()
 
             output_image_list.append(packed_image)
@@ -112,9 +112,6 @@ class MaxRectsBinPacker(PackerInterface):
         image_rect_list = sorted(image_rect_list, key=lambda x: max(x.width, x.height), reverse=True)
 
         for image_rect in image_rect_list:
-            image_rect_r = image_rect.clone()
-            image_rect_r.rotate()
-
             best_max_rects = -1
             best_index = -1
             best_rank = MAX_RANK
@@ -141,7 +138,6 @@ class MaxRectsBinPacker(PackerInterface):
                     if MAX_RANK != best_rank:
                         break
                 if MAX_RANK == best_rank:
-                    print("Add new MaxRects")
                     max_rects_list.append(MaxRects())
                     best_max_rects = len(max_rects_list) - 1
                     best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank_with_rotate(image_rect)
