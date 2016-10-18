@@ -14,7 +14,8 @@ History:
 from ..Rect import Rect
 
 MAX_RANK = 2 ** 32
-
+MAX_WIDTH = 1024 * 16
+MAX_HEIGHT = 1024 * 16
 
 class MaxRects(object):
 	"""
@@ -33,7 +34,7 @@ class MaxRects(object):
 	RANK_BLSF = 1
 	RANK_BAF = 3
 
-	def __init__(self, width=1, height=1):
+	def __init__(self, width=1, height=1, max_width=MAX_WIDTH, max_height=MAX_HEIGHT):
 		super(MaxRects, self).__init__()
 
 		self.size = (width, height)
