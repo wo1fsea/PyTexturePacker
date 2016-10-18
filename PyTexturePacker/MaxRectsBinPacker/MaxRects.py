@@ -5,14 +5,20 @@ MAX_RANK = 2 ** 32
 
 class MaxRects(object):
     """
-    the max rects data
+    the max rects data structure used in max rects bin pack algorithm
     """
 
+    # EXPAND STRATEGY
     EXPAND_BOTH = 0
     EXPAND_WIDTH = 1
     EXPAND_HEIGHT = 2
     EXPAND_SHORT_SIDE = 3
     EXPAND_LONG_SIDE = 4
+
+    # RANK STRATEGY
+    RANK_BSSF = 0
+    RANK_BLSF = 1
+    RANK_BAF = 3
 
     def __init__(self, width=1, height=1):
         super(MaxRects, self).__init__()
@@ -83,14 +89,22 @@ class MaxRects(object):
 
         return result
 
-    def rank(self, main_rect, sub_rect):
+    def rank(self, main_rect, sub_rect, method=RANK_BSSF):
         """
-        BSSF
+        rank
         :param main_rect:
         :param sub_rect:
+        :param method:
         :return:
         """
-        tmp = min(main_rect.width - sub_rect.width, main_rect.height - sub_rect.height)
+        if method == self.RANK_BSSF:
+            tmp = min(main_rect.width - sub_rect.width, main_rect.height - sub_rect.height)
+        elif method == self.RANK_BLSF:
+            tmp = main_rect.width - sub_rect.width if main_rect.width > main_rect.height \
+                else main_rect.height - sub_rect.height
+        elif method == self.RANK_BAF:
+            tmp = main_rect.area - sub_rect.area
+
         assert tmp < MAX_RANK
         if tmp < 0:
             return MAX_RANK
