@@ -1,90 +1,103 @@
-import math
+# -*- coding: utf-8 -*-
+"""----------------------------------------------------------------------------
+Author:
+	Huang Quanyong (wo1fSea)
+	quanyongh@foxmail.com
+Date:
+	2016/10/18
+Description:
+	Rect
+----------------------------------------------------------------------------"""
+
 
 class Rect(object):
-    """
-    Rect type data
+	"""
+	Rect type data
 
-    (left, top)
-            +----+
-            |    |
-            +----+
-                (right, bottom)
-    """
-    def __init__(self, x, y, w, h):
-        self.x, self.y = x, y
-        self.width, self.height = w, h
+	(left, top)
+			+----+
+			|    |
+			+----+
+				(right, bottom)
+	"""
 
-    @property
-    def left(self):
-        return self.x
+	def __init__(self, x, y, w, h):
+		self.x, self.y = x, y
+		self.width, self.height = w, h
 
-    @left.setter
-    def left(self, value):
-        self.width = self.right - value
-        self.x = value
+	@property
+	def left(self):
+		return self.x
 
-    @property
-    def top(self):
-        return self.y
+	@left.setter
+	def left(self, value):
+		self.width = self.right - value
+		self.x = value
 
-    @top.setter
-    def top(self, value):
-        self.height = self.bottom - value
-        self.y = value
+	@property
+	def top(self):
+		return self.y
 
-    @property
-    def right(self):
-        return self.x + self.width
+	@top.setter
+	def top(self, value):
+		self.height = self.bottom - value
+		self.y = value
 
-    @right.setter
-    def right(self, value):
-        self.width = value - self.left
+	@property
+	def right(self):
+		return self.x + self.width
 
-    @property
-    def bottom(self):
-        return self.y + self.height
+	@right.setter
+	def right(self, value):
+		self.width = value - self.left
 
-    @bottom.setter
-    def bottom(self, value):
-        self.height = value - self.top
+	@property
+	def bottom(self):
+		return self.y + self.height
 
-    @property
-    def area(self):
-        return self.width * self.height
+	@bottom.setter
+	def bottom(self, value):
+		self.height = value - self.top
 
-    def clone(self):
-        return Rect(self.x, self.y, self.width, self.height)
+	@property
+	def area(self):
+		return self.width * self.height
 
-    def is_overlaped(self, rect):
-        return not (self.left >= rect.right or
-                    self.top >= rect.bottom or
-                    self.right <= rect.left or
-                    self.bottom <= rect.top)
+	def clone(self):
+		return Rect(self.x, self.y, self.width, self.height)
 
-    def __contains__(self, rect):
-        return (self.left <= rect.left and
-                self.top <= rect.top and
-                self.right >= rect.right and
-                self.bottom >= rect.bottom)
+	def is_overlaped(self, rect):
+		return not (self.left >= rect.right or
+					self.top >= rect.bottom or
+					self.right <= rect.left or
+					self.bottom <= rect.top)
 
-    def __ne__(self, other):
-        return not self == other
+	def __contains__(self, rect):
+		return (self.left <= rect.left and
+				self.top <= rect.top and
+				self.right >= rect.right and
+				self.bottom >= rect.bottom)
 
-    def __eq__(self, other):
-        return (self.x == other.x and
-                self.y == other.y and
-                self.width == other.width and
-                self.height == other.height)
+	def __ne__(self, other):
+		return not self == other
 
-    def rotate(self):
-        width = self.width
-        self.width = self.height
-        self.height = width
+	def __eq__(self, other):
+		return (self.x == other.x and
+				self.y == other.y and
+				self.width == other.width and
+				self.height == other.height)
+
+	def rotate(self):
+		width = self.width
+		self.width = self.height
+		self.height = width
+
 
 def main():
-    rect_a = Rect(0, 0, 6, 1)
-    rect_b = Rect(0, 0, 5, 5)
-    print(rect_a in rect_b, rect_b in rect_a)
+	rect_a = Rect(0, 0, 6, 1)
+	rect_b = Rect(0, 0, 5, 5)
+	print(rect_a in rect_b, rect_b in rect_a)
+
 
 if __name__ == '__main__':
-    main()
+	main()
