@@ -7,17 +7,6 @@ from .MaxRects import MaxRects, MAX_RANK
 SIZE_SEQUENCE = [2 ** ind for ind in range(32)]
 
 
-def save_plist(data_dict, fileName):
-    import plistlib
-
-    with open(fileName, 'wb') as fp:
-        plistlib.dump(data_dict, fp)
-
-
-def save_image(image, fileName):
-    image.save(fileName)
-
-
 def calculate_area(image_rect_list):
     area = 0
     for image_rect in image_rect_list:
@@ -55,12 +44,12 @@ class MaxRectsBinPacker(PackerInterface):
     """
 
     """
-    def __init__(self, *argv, **args):
+    def __init__(self, *args, **kwargs):
         """
 
         :param args:
         """
-        super(MaxRectsBinPacker, self).__init__(*argv, **args)
+        super(MaxRectsBinPacker, self).__init__(*args, **kwargs)
 
     def pack(self, input_images, output_name, output_path=""):
         """
@@ -89,13 +78,13 @@ class MaxRectsBinPacker(PackerInterface):
             output_plist_list.append(packed_plist)
 
         if len(output_plist_list) == 1:
-            save_plist(output_plist_list[0], os.path.join(output_path, "%s.plist" % output_name))
-            save_image(output_image_list[0], os.path.join(output_path, "%s.png" % output_name))
+            Utils.save_plist(output_plist_list[0], os.path.join(output_path, "%s.plist" % output_name))
+            Utils.save_image(output_image_list[0], os.path.join(output_path, "%s.png" % output_name))
         else:
             for i, plist in enumerate(output_plist_list):
-                save_plist(plist, os.path.join(output_path, "%s%d.plist" % (output_name, i)))
+                Utils.save_plist(plist, os.path.join(output_path, "%s%d.plist" % (output_name, i)))
             for i, image in enumerate(output_image_list):
-                save_image(image, os.path.join(output_path, "%s%d%s" % (output_name, i, self.texture_format)))
+                Utils.save_image(image, os.path.join(output_path, "%s%d%s" % (output_name, i, self.texture_format)))
 
     def _pack(self, image_rect_list, max_size):
         min_size = 0

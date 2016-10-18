@@ -1,10 +1,7 @@
-from MaxRectsBinPacker.MaxRectsBinPacker import MaxRectsBinPacker
+from .MaxRectsBinPacker.MaxRectsBinPacker import MaxRectsBinPacker
 
+TYPE_MAX_RECTS_BIN_PACK = MaxRectsBinPacker
 
-def main():
-    packer = MaxRectsBinPacker(max_width=256)
-    packer.pack("test_case/", "test_case")
+def create(packer_type=TYPE_MAX_RECTS_BIN_PACK, *args, **kwargs):
+	return MaxRectsBinPacker(*args, **kwargs)
 
-
-if __name__ == '__main__':
-    main()

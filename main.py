@@ -1,12 +1,9 @@
-from PyTexturePacker import MaxRectsBinPacker
+from PyTexturePacker import Packer
 
 def main():
-    packer = MaxRectsBinPacker.MaxRectsBinPacker(max_width=256)
+    packer = Packer.create(max_width=256)
     packer.pack("test_case/", "test_case")
 
-
 if __name__ == '__main__':
     main()
 
-if __name__ == '__main__':
-    main()
