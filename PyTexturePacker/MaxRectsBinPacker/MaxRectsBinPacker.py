@@ -77,7 +77,7 @@ class MaxRectsBinPacker(PackerInterface):
         else:
             image_rects = Utils.load_images_from_dir(input_images)
 
-        max_rect_list = self._pack(image_rects, self.max_width)
+        max_rect_list = self._pack(image_rects, self.max_width, self.max_height)
 
         output_plist_list = []
         output_image_list = []
@@ -97,29 +97,30 @@ class MaxRectsBinPacker(PackerInterface):
                 Utils.save_plist(plist, os.path.join(output_path, "%s%d.plist" % (output_name, i)))
             for i, image in enumerate(output_image_list):
                 Utils.save_image(image, os.path.join(output_path, "%s%d%s" % (output_name, i, self.texture_format)))
+                image.show()
 
-    def _pack(self, image_rect_list, max_size):
+    def _pack(self, image_rect_list, max_width, max_height):
         min_size = 0
         for image_rect in image_rect_list:
             tmp = max(image_rect.width, image_rect.height)
             if tmp > min_size:
                 min_size = tmp
 
-        if min_size > max_size:
+        if min_size > max_width:
             raise ValueError("size of image is larger than max_size.")
 
         max_rects_list = []
 
         area = calculate_area(image_rect_list)
-        w, h = cal_init_size(area, min_size, max_size)
+        w, h = cal_init_size(area, min_size, max_width)
 
-        max_rects_list.append(MaxRects(w, h))
+        max_rects_list.append(MaxRects(w, h, max_width, max_height))
 
         area = area - w * h
         while area > 0:
-            w, h = cal_init_size(area, max_side_len=max_size)
+            w, h = cal_init_size(area, max_side_len=max_width)
             area = area - w * h
-            max_rects_list.append(MaxRects(w, h))
+            max_rects_list.append(MaxRects(w, h, max_width, max_height))
 
         image_rect_list = sorted(image_rect_list, key=lambda x: max(x.width, x.height), reverse=True)
 
@@ -141,8 +142,7 @@ class MaxRectsBinPacker(PackerInterface):
             if MAX_RANK == best_rank:
                 for i, max_rect in enumerate(max_rects_list):
                     while MAX_RANK == best_rank:
-                        if max_rect.size[0] <= max_size / 2 or max_rect.size[1] <= max_size / 2:
-                            max_rect.expand(MaxRects.EXPAND_SHORT_SIDE)
+                        if max_rect.expand():
                             best_max_rects = i
                             best_index, best_rank, best_rotated = max_rect.find_best_rank_with_rotate(image_rect)
                         else:

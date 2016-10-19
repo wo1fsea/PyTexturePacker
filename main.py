@@ -13,7 +13,7 @@ from PyTexturePacker import Packer
 
 
 def pack_test():
-    packer = Packer.create(max_width=256, bg_color=0xffffff00)
+    packer = Packer.create(max_width=32, max_height=32, bg_color=0xffffff00)
     packer.pack("test_case/", "test_case")
 
 
@@ -44,14 +44,13 @@ def main():
     # 还有一种用法
     p.sort_stats('tottime', 'cumtime').print_stats(.5, 'pack_test')
 
+    # 先按time排序,再按cumulative时间排序,然后打倒出前50%中含有函数信息
 
-# 先按time排序,再按cumulative时间排序,然后打倒出前50%中含有函数信息
+    # 如果想知道有哪些函数调用了bar,可使用
+    # p.print_callers(0.5, "bar")
 
-# 如果想知道有哪些函数调用了bar,可使用
-# p.print_callers(0.5, "bar")
-
-# 同理,查看foo()函数中调用了哪些函数
-# p.print_callees("foo")
+    # 同理,查看foo()函数中调用了哪些函数
+    # p.print_callees("foo")
 
 
 if __name__ == '__main__':

@@ -37,30 +37,39 @@ class MaxRects(object):
         super(MaxRects, self).__init__()
 
         self.size = (width, height)
+        self.max_size = (max_width, max_height)
 
         self.max_rect_list = [Rect(0, 0, width, height)]
         self.image_rect_list = []
 
+    def _is_in_max_size(self, size):
+        return size[0] <= self.max_size[0] and size[1] <= self.max_size[1]
+
     def expand(self, method=EXPAND_BOTH):
-        old_size = self.size
         if method == MaxRects.EXPAND_BOTH:
-            self.size = (self.size[0] * 2, self.size[1] * 2)
+            new_size = (self.size[0] * 2, self.size[1] * 2)
         elif method == MaxRects.EXPAND_WIDTH:
-            self.size = (self.size[0] * 2, self.size[1])
+            new_size = (self.size[0] * 2, self.size[1])
         elif method == MaxRects.EXPAND_HEIGHT:
-            self.size = (self.size[0], self.size[1] * 2)
+            new_size = (self.size[0], self.size[1] * 2)
         elif method == MaxRects.EXPAND_SHORT_SIDE:
             if self.size[0] <= self.size[1]:
-                self.size = (self.size[0] * 2, self.size[1])
+                new_size = (self.size[0] * 2, self.size[1])
             else:
-                self.size = (self.size[0], self.size[1] * 2)
+                new_size = (self.size[0], self.size[1] * 2)
         elif method == MaxRects.EXPAND_LONG_SIDE:
             if self.size[0] >= self.size[1]:
-                self.size = (self.size[0] * 2, self.size[1])
+                new_size = (self.size[0] * 2, self.size[1])
             else:
-                self.size = (self.size[0], self.size[1] * 2)
+                new_size = (self.size[0], self.size[1] * 2)
         else:
             raise ValueError("Unexpected Method")
+
+        if not self._is_in_max_size(new_size):
+            return False
+
+        old_size = self.size
+        self.size = new_size
 
         for max_rect in self.max_rect_list:
             if max_rect.right == old_size[0]:
@@ -77,6 +86,8 @@ class MaxRects(object):
             self.max_rect_list.append(new_rect)
 
         self.max_rect_list = list(filter(self._max_rect_list_pruning, self.max_rect_list))
+
+        return True
 
     def cut(self, main_rect, sub_rect, border=0):
         if not main_rect.is_overlaped(sub_rect):
