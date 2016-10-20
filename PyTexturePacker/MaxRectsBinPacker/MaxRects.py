@@ -45,7 +45,7 @@ class MaxRects(object):
     def _is_in_max_size(self, size):
         return size[0] <= self.max_size[0] and size[1] <= self.max_size[1]
 
-    def expand(self, method=EXPAND_BOTH):
+    def expand(self, method=EXPAND_SHORT_SIDE):
         if method == MaxRects.EXPAND_BOTH:
             new_size = (self.size[0] * 2, self.size[1] * 2)
         elif method == MaxRects.EXPAND_WIDTH:

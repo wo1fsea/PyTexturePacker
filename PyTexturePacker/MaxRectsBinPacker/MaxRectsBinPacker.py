@@ -25,7 +25,50 @@ def calculate_area(image_rect_list):
     return area
 
 
-def cal_init_size(area, min_side_len=0, max_side_len=SIZE_SEQUENCE[-1], force_square=False):
+def cal_init_size(area, min_width, min_height, max_width, max_height):
+    min_short = min(min_width, min_height)
+    min_long = max(min_width, min_height)
+
+    max_short = min(max_width, max_height)
+    max_long = max(max_width, max_height)
+
+    start_i = -1
+    start_j = -1
+
+    for i, l in enumerate(SIZE_SEQUENCE):
+        if l >= min_short and start_i == -1:
+            start_i = i
+        if l >= min_long and start_j == -1:
+            start_j = i
+
+    short = -1
+    long = -1
+
+    for j in range(start_j, len(SIZE_SEQUENCE)):
+        l = SIZE_SEQUENCE[j]
+        if (short != -1 and long != -1) or \
+           l > max_long:
+            break
+
+        for i in range(start_i, j):
+            s = SIZE_SEQUENCE[i]
+            if (short != -1 and long != -1) or \
+               s > max_short:
+                break
+
+            if area <= l * s:
+                short, long = s, l
+
+    if short == -1 and long == -1:
+        return tuple((max_height, max_width))
+
+    if min_width == min_long:
+        return tuple((long, short))
+    else:
+        return tuple((short, long))
+
+
+def cal_init_size0(area, min_side_len=0, max_side_len=SIZE_SEQUENCE[-1], force_square=False):
     start_i = 0
 
     for i, l in enumerate(SIZE_SEQUENCE):
@@ -77,7 +120,7 @@ class MaxRectsBinPacker(PackerInterface):
         else:
             image_rects = Utils.load_images_from_dir(input_images)
 
-        max_rect_list = self._pack(image_rects, self.max_width, self.max_height)
+        max_rect_list = self._pack(image_rects)
 
         output_plist_list = []
         output_image_list = []
@@ -99,28 +142,38 @@ class MaxRectsBinPacker(PackerInterface):
                 Utils.save_image(image, os.path.join(output_path, "%s%d%s" % (output_name, i, self.texture_format)))
                 image.show()
 
-    def _pack(self, image_rect_list, max_width, max_height):
-        min_size = 0
+    def _init_max_rects_list(self, image_rect_list):
+        min_width, min_height = 0, 0
         for image_rect in image_rect_list:
-            tmp = max(image_rect.width, image_rect.height)
-            if tmp > min_size:
-                min_size = tmp
+            if min_width < image_rect.width:
+                min_width = image_rect.width
+            if min_height < image_rect.height:
+                min_height = image_rect.height
 
-        if min_size > max_width:
-            raise ValueError("size of image is larger than max_size.")
+        if self.enable_rotated:
+            if min(min_width, min_height) > min(self.max_width, self.max_height) or \
+               max(min_width, min_height) > max(self.max_width, self.max_height):
+                raise ValueError("size of image is larger than max size.")
+        else:
+            if min_height > self.max_height or min_width > self.max_width:
+                raise ValueError("size of image is larger than max size.")
 
         max_rects_list = []
-
         area = calculate_area(image_rect_list)
-        w, h = cal_init_size(area, min_size, max_width)
+        w, h = cal_init_size(area, min_width, min_height, self.max_width, self.max_height)
 
-        max_rects_list.append(MaxRects(w, h, max_width, max_height))
+        max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height))
 
         area = area - w * h
         while area > 0:
-            w, h = cal_init_size(area, max_side_len=max_width)
+            w, h = cal_init_size(area, 0, 0, self.max_width, self.max_height)
             area = area - w * h
-            max_rects_list.append(MaxRects(w, h, max_width, max_height))
+            max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height))
+
+        return max_rects_list
+
+    def _pack(self, image_rect_list):
+        max_rects_list = self._init_max_rects_list(image_rect_list)
 
         image_rect_list = sorted(image_rect_list, key=lambda x: max(x.width, x.height), reverse=True)
 
