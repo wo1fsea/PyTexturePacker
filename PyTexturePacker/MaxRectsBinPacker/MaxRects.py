@@ -33,11 +33,15 @@ class MaxRects(object):
     RANK_BLSF = 1
     RANK_BAF = 3
 
-    def __init__(self, width=1, height=1, max_width=MAX_WIDTH, max_height=MAX_HEIGHT):
+    def __init__(self, width=1, height=1, max_width=MAX_WIDTH, max_height=MAX_HEIGHT,
+                 border_padding=0, shape_padding=0):
         super(MaxRects, self).__init__()
 
         self.size = (width, height)
         self.max_size = (max_width, max_height)
+
+        self.shape_padding = shape_padding
+        self.border_padding = border_padding
 
         self.max_rect_list = [Rect(0, 0, width, height)]
         self.image_rect_list = []
@@ -163,7 +167,7 @@ class MaxRects(object):
 
         _max_rect_list = []
         for i, rect in enumerate(self.max_rect_list):
-            _max_rect_list.extend(self.cut(rect, image_rect))
+            _max_rect_list.extend(self.cut(rect, image_rect, self.shape_padding))
 
         self.max_rect_list = _max_rect_list
         self.max_rect_list = list(filter(self._max_rect_list_pruning, _max_rect_list))
