@@ -34,14 +34,19 @@ class MaxRects(object):
     RANK_BAF = 3
 
     def __init__(self, width=1, height=1, max_width=MAX_WIDTH, max_height=MAX_HEIGHT,
-                 border_padding=0, shape_padding=0):
+                 force_square=False, shape_padding=0):
         super(MaxRects, self).__init__()
+
+        if force_square:
+            width = height = max(width, height)
+            max_width = max_height = max(max_width, max_height)
 
         self.size = (width, height)
         self.max_size = (max_width, max_height)
 
         self.shape_padding = shape_padding
-        self.border_padding = border_padding
+
+        self.force_square = force_square
 
         self.max_rect_list = [Rect(0, 0, width, height)]
         self.image_rect_list = []
@@ -50,6 +55,9 @@ class MaxRects(object):
         return size[0] <= self.max_size[0] and size[1] <= self.max_size[1]
 
     def expand(self, method=EXPAND_SHORT_SIDE):
+        if self.force_square:
+            method = self.EXPAND_BOTH
+
         if method == MaxRects.EXPAND_BOTH:
             new_size = (self.size[0] * 2, self.size[1] * 2)
         elif method == MaxRects.EXPAND_WIDTH:

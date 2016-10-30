@@ -68,32 +68,6 @@ def cal_init_size(area, min_width, min_height, max_width, max_height):
         return tuple((short, long))
 
 
-def cal_init_size0(area, min_side_len=0, max_side_len=SIZE_SEQUENCE[-1], force_square=False):
-    start_i = 0
-
-    for i, l in enumerate(SIZE_SEQUENCE):
-        if l >= min_side_len:
-            start_i = i
-            break
-
-    if force_square:
-        for i, l in enumerate(SIZE_SEQUENCE):
-            if i < start_i:
-                continue
-            if area <= l * l:
-                return tuple((l if l < max_side_len else max_side_len, l if l < max_side_len else max_side_len))
-    else:
-        for i, l in enumerate(SIZE_SEQUENCE):
-            if i < start_i:
-                continue
-            for j in range(0, i + 1):
-                l2 = SIZE_SEQUENCE[j]
-                if area <= l * l2:
-                    return tuple((l if l < max_side_len else max_side_len, l2 if l2 < max_side_len else max_side_len))
-
-    return tuple((max_side_len, max_side_len))
-
-
 class MaxRectsBinPacker(PackerInterface):
     """
 
@@ -162,13 +136,13 @@ class MaxRectsBinPacker(PackerInterface):
         area = calculate_area(image_rect_list)
         w, h = cal_init_size(area, min_width, min_height, self.max_width, self.max_height)
 
-        max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height))
+        max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height, force_square=self.force_square))
 
         area = area - w * h
         while area > 0:
             w, h = cal_init_size(area, 0, 0, self.max_width, self.max_height)
             area = area - w * h
-            max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height))
+            max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height, force_square=self.force_square))
 
         return max_rects_list
 
@@ -203,11 +177,11 @@ class MaxRectsBinPacker(PackerInterface):
                     if MAX_RANK != best_rank:
                         break
                 if MAX_RANK == best_rank:
-                    max_rects_list.append(MaxRects())
+                    max_rects_list.append(MaxRects(force_square=self.force_square))
                     best_max_rects = len(max_rects_list) - 1
                     best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank_with_rotate(image_rect)
                     while MAX_RANK == best_rank:
-                        max_rects_list[-1].expand(MaxRects.EXPAND_SHORT_SIDE)
+                        max_rects_list[-1].expand()
                         best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank_with_rotate(image_rect)
 
             if best_rotated:
