@@ -195,6 +195,8 @@ class MaxRects(object):
         return True
 
     def dump_plist(self):
+        import os
+
         plist_data = {}
 
         frames = {}
@@ -203,6 +205,8 @@ class MaxRects(object):
                 else (image_rect.height, image_rect.width)
 
             path = image_rect.image_path
+            _, path = os.path.split(path)
+
             frames[path] = dict(
                 frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, width, height),
                 offset="{%d,%d}" % (0, 0),

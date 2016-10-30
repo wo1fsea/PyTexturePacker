@@ -50,7 +50,7 @@ def cal_init_size(area, min_width, min_height, max_width, max_height):
            l > max_long:
             break
 
-        for i in range(start_i, j):
+        for i in range(start_i, j + 1):
             s = SIZE_SEQUENCE[i]
             if (short != -1 and long != -1) or \
                s > max_short:
