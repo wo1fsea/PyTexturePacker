@@ -40,9 +40,11 @@ def load_images_from_dir(dir_path):
 def save_plist(data_dict, file_name):
     import plistlib
 
-    with open(file_name, 'wb') as fp:
-        plistlib.dump(data_dict, fp)
-
+    if hasattr(plistlib, "dump"):
+        with open(file_name, 'wb') as fp:
+            plistlib.dump(data_dict, fp)
+    else:
+        plistlib.writePlist(data_dict, file_name)
 
 def save_image(image, file_name):
     image.save(file_name)
