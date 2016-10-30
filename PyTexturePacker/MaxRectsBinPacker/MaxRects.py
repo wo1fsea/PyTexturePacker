@@ -193,13 +193,16 @@ class MaxRects(object):
 
         frames = {}
         for image_rect in self.image_rect_list:
+            width, height = (image_rect.width, image_rect.height) if not image_rect.rotated \
+                else (image_rect.height, image_rect.width)
+
             path = image_rect.image_path
             frames[path] = dict(
-                frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, image_rect.width, image_rect.height),
+                frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, width, height),
                 offset="{%d,%d}" % (0, 0),
-                rotated=bool(image_rect.rotate),
-                sourceColorRect="{{%d,%d},{%d,%d}}" % (0, 0, image_rect.width, image_rect.height),
-                sourceSize="{%d,%d}" % (image_rect.width, image_rect.height),
+                rotated=bool(image_rect.rotated),
+                sourceColorRect="{{%d,%d},{%d,%d}}" % (0, 0, width, height),
+                sourceSize="{%d,%d}" % (width, height),
             )
 
         plist_data["frames"] = frames
@@ -219,7 +222,7 @@ class MaxRects(object):
         for image_rect in self.image_rect_list:
             image = image_rect.image.crop()
             if image_rect.rotated:
-                image = image.transpose(Image.ROTATE_90)
+                image = image.transpose(Image.ROTATE_270)
             packed_image.paste(image, (image_rect.left, image_rect.top, image_rect.right, image_rect.bottom))
 
         return packed_image
