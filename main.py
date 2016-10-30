@@ -13,8 +13,8 @@ from PyTexturePacker import Packer
 
 
 def pack_test():
-    packer = Packer.create(max_width=32, max_height=32, bg_color=0xffffff00)
-    packer.pack("test_case/", "test_case")
+    packer = Packer.create(max_width=2048, max_height=2048, bg_color=0xffffff00)
+    packer.pack("test_case/", "test_case%d")
 
 
 def main():

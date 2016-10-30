@@ -107,13 +107,16 @@ class MaxRectsBinPacker(PackerInterface):
             output_plist_list.append(packed_plist)
 
         if len(output_plist_list) == 1:
+            if "%d" in output_name:
+                output_name = output_name.replace("%d", "")
             Utils.save_plist(output_plist_list[0], os.path.join(output_path, "%s.plist" % output_name))
             Utils.save_image(output_image_list[0], os.path.join(output_path, "%s.png" % output_name))
         else:
+            assert "%d" in output_name, 'more than one output image, but no "%d" in output_name'
             for i, plist in enumerate(output_plist_list):
-                Utils.save_plist(plist, os.path.join(output_path, "%s%d.plist" % (output_name, i)))
+                Utils.save_plist(plist, os.path.join(output_path, "%s.plist" % output_name % i))
             for i, image in enumerate(output_image_list):
-                Utils.save_image(image, os.path.join(output_path, "%s%d%s" % (output_name, i, self.texture_format)))
+                Utils.save_image(image, os.path.join(output_path, "%s%s" % (output_name, self.texture_format) % i))
                 image.show()
 
     def _init_max_rects_list(self, image_rect_list):

@@ -46,14 +46,15 @@ def save_plist(data_dict, file_name):
     else:
         plistlib.writePlist(data_dict, file_name)
 
+
 def save_image(image, file_name):
     image.save(file_name)
 
 
-def alpha_bleeding(image, bleeding_pixel = 32):
+def alpha_bleeding(image, bleeding_pixel=32):
     offsets = ((-1, -1), (0, -1), (1, -1),
                (-1, 0), (1, 0),
-               (-1, 1), (0, 1), (1,1))
+               (-1, 1), (0, 1), (1, 1))
 
     image = image.copy()
     width, height = image.size
@@ -76,7 +77,7 @@ def alpha_bleeding(image, bleeding_pixel = 32):
                 return True
         return False
 
-    def _bleeding(x ,y):
+    def _bleeding(x, y):
         borders = []
         pixel = pa[x, y]
         for offset in offsets:
@@ -112,8 +113,6 @@ def alpha_remove(image):
     pa = image.load()
     for x in range(width):
         for y in range(height):
-            pixel = pa[x,y]
+            pixel = pa[x, y]
             pa[x, y] = (pixel[0], pixel[1], pixel[2], 255)
     return image
-
-
