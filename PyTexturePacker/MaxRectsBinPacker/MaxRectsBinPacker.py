@@ -158,7 +158,7 @@ class MaxRectsBinPacker(PackerInterface):
             best_rotated = False
 
             for i, max_rect in enumerate(max_rects_list):
-                index, rank, rotated = max_rect.find_best_rank_with_rotate(image_rect)
+                index, rank, rotated = max_rect.find_best_rank(image_rect, self.enable_rotated)
 
                 if rank < best_rank:
                     best_max_rects = i
@@ -171,7 +171,7 @@ class MaxRectsBinPacker(PackerInterface):
                     while MAX_RANK == best_rank:
                         if max_rect.expand():
                             best_max_rects = i
-                            best_index, best_rank, best_rotated = max_rect.find_best_rank_with_rotate(image_rect)
+                            best_index, best_rank, best_rotated = max_rect.find_best_rank(image_rect, self.enable_rotated)
                         else:
                             break
                     if MAX_RANK != best_rank:
@@ -179,10 +179,10 @@ class MaxRectsBinPacker(PackerInterface):
                 if MAX_RANK == best_rank:
                     max_rects_list.append(MaxRects(force_square=self.force_square))
                     best_max_rects = len(max_rects_list) - 1
-                    best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank_with_rotate(image_rect)
+                    best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect, self.enable_rotated)
                     while MAX_RANK == best_rank:
                         max_rects_list[-1].expand()
-                        best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank_with_rotate(image_rect)
+                        best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect, self.enable_rotated)
 
             if best_rotated:
                 image_rect.rotate()

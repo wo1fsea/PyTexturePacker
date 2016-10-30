@@ -147,7 +147,13 @@ class MaxRects(object):
         else:
             return tmp
 
-    def find_best_rank(self, image_rect):
+    def find_best_rank(self, image_rect, enable_rotated=False):
+        if enable_rotated:
+            return self.find_best_rank_with_rotate(image_rect)
+        else:
+            return self.find_best_rank_without_rotate(image_rect)
+
+    def find_best_rank_without_rotate(self, image_rect):
         best_rank = MAX_RANK
         best_index = -1
         for i, rect in enumerate(self.max_rect_list):
@@ -155,14 +161,14 @@ class MaxRects(object):
             if rank < best_rank:
                 best_rank = rank
                 best_index = i
-        return best_index, best_rank
+        return best_index, best_rank, False
 
     def find_best_rank_with_rotate(self, image_rect):
         image_rect_r = image_rect.clone()
         image_rect_r.rotate()
 
-        index, rank = self.find_best_rank(image_rect)
-        index_r, rank_r = self.find_best_rank(image_rect_r)
+        index, rank, _ = self.find_best_rank_without_rotate(image_rect)
+        index_r, rank_r, _ = self.find_best_rank_without_rotate(image_rect_r)
 
         if rank < rank_r:
             return index, rank, False
