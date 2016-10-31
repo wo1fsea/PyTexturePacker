@@ -106,18 +106,18 @@ class MaxRectsBinPacker(PackerInterface):
             output_image_list.append(packed_image)
             output_plist_list.append(packed_plist)
 
-        if len(output_plist_list) == 1:
-            if "%d" in output_name:
-                output_name = output_name.replace("%d", "")
+        assert "%d" in output_name or len(output_plist_list) == 1, 'more than one output image, but no "%d" in output_name'
+
+        if "%d" not in output_name:
             Utils.save_plist(output_plist_list[0], os.path.join(output_path, "%s.plist" % output_name))
             Utils.save_image(output_image_list[0], os.path.join(output_path, "%s.png" % output_name))
         else:
-            assert "%d" in output_name, 'more than one output image, but no "%d" in output_name'
             for i, plist in enumerate(output_plist_list):
                 Utils.save_plist(plist, os.path.join(output_path, "%s.plist" % output_name % i))
             for i, image in enumerate(output_image_list):
+                if self.reduce_border_artifacts:
+                    image = Utils.alpha_bleeding(image)
                 Utils.save_image(image, os.path.join(output_path, "%s%s" % (output_name, self.texture_format) % i))
-                image.show()
 
     def _init_max_rects_list(self, image_rect_list):
         min_width, min_height = 0, 0
@@ -139,13 +139,15 @@ class MaxRectsBinPacker(PackerInterface):
         area = calculate_area(image_rect_list)
         w, h = cal_init_size(area, min_width, min_height, self.max_width, self.max_height)
 
-        max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height, force_square=self.force_square))
+        max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height,
+                                       force_square=self.force_square, shape_padding=self.shape_padding))
 
         area = area - w * h
         while area > 0:
             w, h = cal_init_size(area, 0, 0, self.max_width, self.max_height)
             area = area - w * h
-            max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height, force_square=self.force_square))
+            max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height,
+                                           force_square=self.force_square, shape_padding=self.shape_padding))
 
         return max_rects_list
 
@@ -180,7 +182,7 @@ class MaxRectsBinPacker(PackerInterface):
                     if MAX_RANK != best_rank:
                         break
                 if MAX_RANK == best_rank:
-                    max_rects_list.append(MaxRects(force_square=self.force_square))
+                    max_rects_list.append(MaxRects(force_square=self.force_square, shape_padding=self.shape_padding))
                     best_max_rects = len(max_rects_list) - 1
                     best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect, self.enable_rotated)
                     while MAX_RANK == best_rank:
