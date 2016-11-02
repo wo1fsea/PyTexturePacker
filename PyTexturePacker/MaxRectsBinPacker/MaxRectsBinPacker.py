@@ -94,6 +94,10 @@ class MaxRectsBinPacker(PackerInterface):
         else:
             image_rects = Utils.load_images_from_dir(input_images)
 
+        if self.trim_mode:
+            for image_rect in image_rects:
+                image_rect.trim(self.trim_mode)
+
         max_rect_list = self._pack(image_rects)
 
         output_plist_list = []

@@ -118,7 +118,7 @@ def alpha_remove(image):
     return image
 
 
-def clean_alpha_zero(image):
+def clean_pixel_alpha_below(image, v=1):
     image = image.copy()
     width, height = image.size
     if image.mode != "RGBA":
@@ -128,7 +128,7 @@ def clean_alpha_zero(image):
     for x in range(width):
         for y in range(height):
             pixel = pa[x, y]
-            if pixel[3] == 0:
+            if pixel[3] < v:
                 pa[x, y] = (0, 0, 0, 0)
     return image
 
