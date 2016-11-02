@@ -63,11 +63,11 @@ class ImageRect(Rect):
         self.width = self.height
         self.height = width
 
-    def trim(self):
+    def trim(self, v=1):
         if self._trimmed:
             return
 
-        self.image = Utils.clean_alpha_zero(self.image)
+        self.image = Utils.clean_pixel_alpha_below(self.image, v)
         self._trimmed = True
 
     def clone(self):
