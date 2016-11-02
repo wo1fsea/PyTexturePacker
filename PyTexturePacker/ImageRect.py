@@ -12,7 +12,7 @@ Description:
 from PIL import Image
 
 from .Rect import Rect
-
+from . import Utils
 
 class ImageRect(Rect):
     """
@@ -25,6 +25,7 @@ class ImageRect(Rect):
         self.image = None
         self.image_path = None
         self._rotated = False
+        self._trimmed = False
         if image_path:
             self.load_image(image_path)
             self.image_path = image_path
@@ -33,11 +34,25 @@ class ImageRect(Rect):
     def rotated(self):
         return self._rotated
 
+    @property
+    def trimmed(self):
+        return self._trimmed
+
+    @property
+    def bbox(self):
+        if self._trimmed:
+            return self.image.getbbox()
+        else:
+            return tuple(0, 0, self.width, self.height)
+
     def load_image(self, image_path):
         self.image = Image.open(image_path)
         self.image_path = image_path
         self.x, self.y = 0, 0
         self.width, self.height = self.image.size
+
+        self._rotated = False
+        self._trimmed = False
 
     def rotate(self):
         # rotate = Image.ROTATE_90 if self._rotated else Image.ROTATE_270
@@ -47,6 +62,13 @@ class ImageRect(Rect):
         width = self.width
         self.width = self.height
         self.height = width
+
+    def trim(self):
+        if self._trimmed:
+            return
+
+        self.image = Utils.clean_alpha_zero(self.image)
+        self._trimmed = True
 
     def clone(self):
         tmp = ImageRect()
