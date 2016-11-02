@@ -24,6 +24,9 @@ class ImageRect(Rect):
 
         self.image = None
         self.image_path = None
+        self.sourceSize = (0, 0)
+        self.sourceBox = (0, 0, 0, 0)
+
         self._rotated = False
         self._trimmed = False
         if image_path:
@@ -51,6 +54,9 @@ class ImageRect(Rect):
         self.x, self.y = 0, 0
         self.width, self.height = self.image.size
 
+        self.sourceSize = self.image.size
+        self.sourceBox = (0, 0, self.width, self.height)
+
         self._rotated = False
         self._trimmed = False
 
@@ -68,6 +74,12 @@ class ImageRect(Rect):
             return
 
         self.image = Utils.clean_pixel_alpha_below(self.image, v)
+        bbox = self.image.getbbox()
+        if bbox:
+            self.image = self.image.crop(bbox)
+            self.sourceBox = bbox
+            self.width, self.height = self.image.size
+
         self._trimmed = True
 
     def clone(self):
