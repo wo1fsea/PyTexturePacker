@@ -204,10 +204,13 @@ class MaxRects(object):
             width, height = (image_rect.width, image_rect.height) if not image_rect.rotated \
                 else (image_rect.height, image_rect.width)
 
-            center_offset =((image_rect.source_size[0] - image_rect.source_box[2] - image_rect.source_box[0] -1 )/2,
-                            (image_rect.source_size[1] - image_rect.source_box[3] - image_rect.source_box[1] -1 )/2)
-            if image_rect.rotated:
-                center_offset = (-center_offset[1], center_offset[0])
+            center_offset = (0, 0)
+            if image_rect.trimmed:
+                center_offset = (image_rect.source_box[0] + width / 2. - image_rect.source_size[0] / 2.,
+                          - (image_rect.source_box[1] + height / 2. - image_rect.source_size[1] / 2.))
+
+            # if image_rect.rotated:
+            #     center_offset = (-center_offset[1], center_offset[0])
 
             path = image_rect.image_path
             _, path = os.path.split(path)
