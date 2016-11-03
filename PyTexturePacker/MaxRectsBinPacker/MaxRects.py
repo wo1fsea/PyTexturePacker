@@ -204,15 +204,20 @@ class MaxRects(object):
             width, height = (image_rect.width, image_rect.height) if not image_rect.rotated \
                 else (image_rect.height, image_rect.width)
 
+            center_offset =((image_rect.source_size[0] - image_rect.source_box[2] - image_rect.source_box[0] -1 )/2,
+                            (image_rect.source_size[1] - image_rect.source_box[3] - image_rect.source_box[1] -1 )/2)
+            if image_rect.rotated:
+                center_offset = (-center_offset[1], center_offset[0])
+
             path = image_rect.image_path
             _, path = os.path.split(path)
 
             frames[path] = dict(
                 frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, width, height),
-                offset="{%d,%d}" % (0, 0),
+                offset="{%d,%d}" % center_offset,
                 rotated=bool(image_rect.rotated),
-                sourceColorRect="{{%d,%d},{%d,%d}}" % (0, 0, width, height),
-                sourceSize="{%d,%d}" % (width, height),
+                sourceColorRect="{{%d,%d},{%d,%d}}" % (image_rect.source_box[0], image_rect.source_box[1], width, height) ,
+                sourceSize="{%d,%d}" % image_rect.source_size,
             )
 
         plist_data["frames"] = frames

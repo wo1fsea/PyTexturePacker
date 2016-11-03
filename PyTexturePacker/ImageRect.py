@@ -24,8 +24,8 @@ class ImageRect(Rect):
 
         self.image = None
         self.image_path = None
-        self.sourceSize = (0, 0)
-        self.sourceBox = (0, 0, 0, 0)
+        self.source_size = (0, 0)
+        self.source_box = (0, 0, 0, 0)
 
         self._rotated = False
         self._trimmed = False
@@ -54,8 +54,8 @@ class ImageRect(Rect):
         self.x, self.y = 0, 0
         self.width, self.height = self.image.size
 
-        self.sourceSize = self.image.size
-        self.sourceBox = (0, 0, self.width, self.height)
+        self.source_size = self.image.size
+        self.source_box = (0, 0, self.width, self.height)
 
         self._rotated = False
         self._trimmed = False
@@ -77,7 +77,7 @@ class ImageRect(Rect):
         bbox = self.image.getbbox()
         if bbox:
             self.image = self.image.crop(bbox)
-            self.sourceBox = bbox
+            self.source_box = bbox
             self.width, self.height = self.image.size
 
         self._trimmed = True
