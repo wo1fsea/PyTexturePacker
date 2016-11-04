@@ -13,6 +13,11 @@ SUPPORTED_IMAGE_FORMAT = [".png", ".jpg", ".bmp"]
 
 
 def load_images_from_paths(image_path_list):
+    """
+    load image form paths
+    :param image_path_list: image paths list
+    :return: ImageRect list
+    """
     from .ImageRect import ImageRect
 
     image_rect_list = []
@@ -24,6 +29,11 @@ def load_images_from_paths(image_path_list):
 
 
 def load_images_from_dir(dir_path):
+    """
+    load all images from a directory
+    :param dir_path: directory path
+    :return: ImageRect list
+    """
     import os
 
     image_rect_path = []
@@ -37,21 +47,39 @@ def load_images_from_dir(dir_path):
     return load_images_from_paths(image_rect_path)
 
 
-def save_plist(data_dict, file_name):
+def save_plist(data_dict, file_path):
+    """
+    save a dict as a plist file
+    :param data_dict: dict data
+    :param file_path: plist file path to save
+    :return:
+    """
     import plistlib
 
     if hasattr(plistlib, "dump"):
-        with open(file_name, 'wb') as fp:
+        with open(file_path, 'wb') as fp:
             plistlib.dump(data_dict, fp)
     else:
-        plistlib.writePlist(data_dict, file_name)
+        plistlib.writePlist(data_dict, file_path)
 
 
-def save_image(image, file_name):
-    image.save(file_name)
+def save_image(image, file_path):
+    """
+    save a Image as a file
+    :param image: Image
+    :param file_name: file path to save
+    :return:
+    """
+    image.save(file_path)
 
 
-def alpha_bleeding(image, bleeding_pixel=32):
+def alpha_bleeding(image, bleeding_pixel=8):
+    """
+    alpha bleeding
+    :param image: Image
+    :param bleeding_pixel: pixel to bleed
+    :return:
+    """
     offsets = ((-1, -1), (0, -1), (1, -1),
                (-1, 0), (1, 0),
                (-1, 1), (0, 1), (1, 1))
@@ -106,6 +134,11 @@ def alpha_bleeding(image, bleeding_pixel=32):
 
 
 def alpha_remove(image):
+    """
+    remove the alpha channel of the image(set as 255)
+    :param image: Image
+    :return:
+    """
     image = image.copy()
     width, height = image.size
     if image.mode != "RGBA":
@@ -119,6 +152,12 @@ def alpha_remove(image):
 
 
 def clean_pixel_alpha_below(image, v=1):
+    """
+    clean pixels of the image which alpha channel is below the given value
+    :param image: Image
+    :param v: given value
+    :return:
+    """
     image = image.copy()
     width, height = image.size
     if image.mode != "RGBA":
