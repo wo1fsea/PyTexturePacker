@@ -61,8 +61,6 @@ class ImageRect(Rect):
         self._trimmed = False
 
     def rotate(self):
-        # rotate = Image.ROTATE_90 if self._rotated else Image.ROTATE_270
-        # self._image = self._image.transpose(rotate)
         self._rotated = not self._rotated
 
         width = self.width
