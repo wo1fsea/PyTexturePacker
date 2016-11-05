@@ -40,3 +40,18 @@ class PackerInterface(object):
 
     def pack(self, input_images, output_name, output_path=""):
         raise NotImplementedError
+
+    def multi_pack_handler(self, args):
+        if isinstance(args, (list, tuple)):
+            self.pack(*args)
+        elif isinstance(args, dict):
+            self.pack(**args)
+
+    def multi_pack(self, pack_args_list):
+        import multiprocessing
+        pool_size = multiprocessing.cpu_count() * 2
+        pool = multiprocessing.Pool(processes=pool_size)
+        pool.map(self.multi_pack_handler, pack_args_list)
+        pool.close()
+        pool.join()
+
