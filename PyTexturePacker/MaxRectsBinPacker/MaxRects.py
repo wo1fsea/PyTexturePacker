@@ -101,26 +101,26 @@ class MaxRects(object):
 
         return True
 
-    def cut(self, main_rect, sub_rect, border=0):
+    def cut(self, main_rect, sub_rect):
         if not main_rect.is_overlaped(sub_rect):
             return [main_rect, ]
 
         result = []
         if main_rect.left < sub_rect.left:
             tmp = main_rect.clone()
-            tmp.right = sub_rect.left - border
+            tmp.right = sub_rect.left - self.shape_padding
             result.append(tmp)
         if main_rect.top < sub_rect.top:
             tmp = main_rect.clone()
-            tmp.bottom = sub_rect.top - border
+            tmp.bottom = sub_rect.top - self.shape_padding
             result.append(tmp)
         if main_rect.right > sub_rect.right:
             tmp = main_rect.clone()
-            tmp.left = sub_rect.right + border
+            tmp.left = sub_rect.right + self.shape_padding
             result.append(tmp)
         if main_rect.bottom > sub_rect.bottom:
             tmp = main_rect.clone()
-            tmp.top = sub_rect.bottom + border
+            tmp.top = sub_rect.bottom + self.shape_padding
             result.append(tmp)
 
         return result
@@ -181,7 +181,7 @@ class MaxRects(object):
 
         _max_rect_list = []
         for i, rect in enumerate(self.max_rect_list):
-            _max_rect_list.extend(self.cut(rect, image_rect, self.shape_padding))
+            _max_rect_list.extend(self.cut(rect, image_rect))
 
         self.max_rect_list = _max_rect_list
         self.max_rect_list = list(filter(self._max_rect_list_pruning, _max_rect_list))
