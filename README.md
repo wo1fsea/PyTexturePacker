@@ -32,7 +32,7 @@ Here comes an example of using PyTexturePacker to pack texture images from a dir
 ### bg_color
 
 The background color of output image. The pixels of the empty area in the output image will be filled with bg_color.
-The default value is 0x00000000, which is in format of "RGBA". A tuple of value can also be accepted, like (R, G, B, A).
+The default value is 0x00000000, which is in format of "RGBA". A tuple of values can also be accepted, like (R, G, B, A).
 
 ### texture_format
 
