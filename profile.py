@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""----------------------------------------------------------------------------
+Author:
+    Huang Quanyong (wo1fSea)
+    quanyongh@foxmail.com
+Date:
+    2016/11/06
+Description:
+    profile.py
+----------------------------------------------------------------------------"""
 
 from PyTexturePacker import Packer
 

@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""----------------------------------------------------------------------------
+Author:
+    Huang Quanyong (wo1fSea)
+    quanyongh@foxmail.com
+Date:
+    2016/11/06
+Description:
+    test.py
+----------------------------------------------------------------------------"""
+
 import unittest
 
 TEST_MODULE = "Test"
@@ -16,9 +27,7 @@ def load_test_suite():
     files = filter(test_file_re.match, files)
 
     module_names = map(lambda f: os.path.splitext(f)[0], files)
-
-    importer = lambda x: __import__("%s.%s" % (TEST_MODULE, x), fromlist=[TEST_MODULE])
-    modules = map(importer, module_names)
+    modules = map(lambda x: __import__("%s.%s" % (TEST_MODULE, x), fromlist=[TEST_MODULE]), module_names)
 
     return unittest.TestSuite(map(unittest.defaultTestLoader.loadTestsFromModule, modules))
 
