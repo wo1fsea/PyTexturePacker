@@ -1,6 +1,6 @@
 # PyTexturePacker
 
-![](https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master)
+[![Build Status](https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master)](https://travis-ci.org/wo1fsea/PyTexturePacker)
 
 PyTexturePacker is an open source python lib, released under the MIT License.
 
