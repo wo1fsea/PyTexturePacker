@@ -6,7 +6,7 @@ Author:
 Date:
     2016/11/06
 Description:
-    profile.py
+    main_profile.py
 ----------------------------------------------------------------------------"""
 
 from PyTexturePacker import Packer
