@@ -1,5 +1,7 @@
 # PyTexturePacker
 
+![](https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master)
+
 PyTexturePacker is an open source python lib, released under the MIT License.
 
 A subset of feature of [texturepacker](https://www.codeandweb.com/texturepacker) has been implemented in this lib. And MaxRectsBinPack algorithm is used to generate sprite sheet in this lib.
