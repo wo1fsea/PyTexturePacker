@@ -2,7 +2,7 @@
 
 PyTexturePacker is an open source python lib, released under the MIT License.
 
-A subset of feature of [texturepacker](https://www.codeandweb.com/texturepacker) has been implemented in this lib. And MaxRectsBinPack algorithm which is the best-known algorithm is used in sprite sheet generation.
+A subset of feature of [texturepacker](https://www.codeandweb.com/texturepacker) has been implemented in this lib. And MaxRectsBinPack algorithm is used to generate sprite sheet in this lib.
 
 ## License
 PyTexturePacker is released under the terms of MIT License. You may find the content of the license [here](http://opensource.org/licenses/MIT), or `LICENSE.txt` inside the project directory.
@@ -19,6 +19,14 @@ It tries to use the least texture space by applying different heuristics when pl
 
 
 ## Usage
+
+First, to install pillow:
+
+`> pip install Pillow`
+
+or:
+
+`> easy_install Pillow`
 
 Here comes an example of using PyTexturePacker to pack texture images from a directory.
 
