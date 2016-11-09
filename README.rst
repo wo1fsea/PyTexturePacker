@@ -19,7 +19,8 @@ MaxRectsBinPack
 MaxRectsBinPack is currently the best packing algorithm.
 It tries to use the least texture space by applying different heuristics when placing the sprites.
 
-    MaxRects
+- MaxRects
+
     - Best-known algorithm for packing textures
     - Is fast and has a high packing ratio
     - Enable rotation for best results
