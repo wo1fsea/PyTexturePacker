@@ -1,6 +1,6 @@
-===========
-Quick Start
-===========
+==============
+0. Quick Start
+==============
 
 
 Installation
