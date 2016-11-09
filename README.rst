@@ -150,6 +150,6 @@ The project is released under the terms of MIT License. You may find the content
     :target: https://travis-ci.org/wo1fsea/PyTexturePacker
     :alt: Build status
 .. |docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
-    :target: http://pytexturepacker.readthedocs.io/en/master/?badge=master
+    :target: http://pytexturepacker.readthedocs.io/
     :alt: Documentation Status
    
