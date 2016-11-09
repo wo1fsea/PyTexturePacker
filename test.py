@@ -11,7 +11,7 @@ Description:
 
 import unittest
 
-TEST_MODULE = "Test"
+TEST_MODULE = "tests"
 TEST_CASE_NAME = "^test[\w]+\.py$"
 
 
