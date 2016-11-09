@@ -19,7 +19,8 @@ MaxRectsBinPack
 MaxRectsBinPack is currently the best packing algorithm.
 It tries to use the least texture space by applying different heuristics when placing the sprites.
 
-    MaxRects
+- MaxRects
+
     - Best-known algorithm for packing textures
     - Is fast and has a high packing ratio
     - Enable rotation for best results
@@ -146,9 +147,10 @@ The project is released under the terms of MIT License. You may find the content
 
 
 
-..|build-status| image:: https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master
-   :target: https://travis-ci.org/wo1fsea/PyTexturePacker
-   :alt: Build status
-..|docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
-   :target: http://pytexturepacker.readthedocs.io/en/latest/?badge=master
-   :alt: Documentation Status
+.. |build-status| image:: https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master
+    :target: https://travis-ci.org/wo1fsea/PyTexturePacker
+    :alt: Build status
+.. |docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
+    :target: http://pytexturepacker.readthedocs.io/
+    :alt: Documentation Status
+   
