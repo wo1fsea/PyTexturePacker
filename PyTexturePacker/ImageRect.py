@@ -51,6 +51,7 @@ class ImageRect(Rect):
     def load_image(self, image_path):
         self.image = Image.open(image_path)
         self.image_path = image_path
+
         self.x, self.y = 0, 0
         self.width, self.height = self.image.size
 
@@ -82,10 +83,18 @@ class ImageRect(Rect):
 
     def clone(self):
         tmp = ImageRect()
+
+        tmp.image = self.image
+        tmp.image_path = self.image_path
+
         tmp.x, tmp.y = self.x, self.y
         tmp.width, tmp.height = self.width, self.height
-        tmp.image = self.image
+
+        tmp.source_size = self.source_size
+        tmp.source_box = self.source_box
+
         tmp._rotated = self._rotated
+        tmp._trimmed = self._trimmed
         return tmp
 
 

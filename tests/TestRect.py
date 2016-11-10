@@ -1,3 +1,14 @@
+# -*- coding: utf-8 -*-
+"""----------------------------------------------------------------------------
+Author:
+    Huang Quanyong (wo1fSea)
+    quanyongh@foxmail.com
+Date:
+    2016/11/10
+Description:
+    TestRect.py
+----------------------------------------------------------------------------"""
+
 import unittest
 import random
 from PyTexturePacker import Rect
