@@ -135,7 +135,7 @@ Support
 =======
 
 If you are having issues, please let us know.
-Please feel free to contact me. email: quanyongh@foxmail.com
+Please feel free to contact me[quanyongh@foxmail.com].
 
 
 License
