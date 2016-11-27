@@ -1,4 +1,4 @@
 .idea
 *.pyc
-
+.pypirc
 .DS_Store
