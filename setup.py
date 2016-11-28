@@ -11,7 +11,15 @@ setup(
     url='https://github.com/wo1fsea/PyTexturePacker',
     download_url='https://github.com/wo1fsea/PyTexturePacker',
     keywords=['TexturePacker', 'cocos2d'],
-    classifiers=[],
     license='MIT',
     install_requires=['Pillow'],
+    classifiers=[
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.2",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Topic :: Multimedia :: Graphics"],
 )
