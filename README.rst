@@ -1,4 +1,3 @@
-
 PyTexturePacker |build-status| |docs-status|
 ============================================
 
@@ -29,23 +28,11 @@ It tries to use the least texture space by applying different heuristics when pl
 Installation
 ============
 
-1. Clone The Package
+Install Pillow with pip:
 
 .. code:: bash
 
-    $ git clone git@github.com:wo1fsea/PyTexturePacker.git
-
-2. Install Dependency
-
-.. code:: bash
-
-    $ pip install Pillow
-
-or:
-
-.. code:: bash
-
-    $ easy_install Pillow
+    $ pip install PyTexturePacker
 
 
 Usage
@@ -148,9 +135,9 @@ The project is released under the terms of MIT License. You may find the content
 
 
 .. |build-status| image:: https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master
-    :target: https://travis-ci.org/wo1fsea/PyTexturePacker
-    :alt: Build status
+:target: https://travis-ci.org/wo1fsea/PyTexturePacker
+:alt: Build status
 .. |docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
-    :target: http://pytexturepacker.readthedocs.io/
-    :alt: Documentation Status
+:target: http://pytexturepacker.readthedocs.io/
+:alt: Documentation Status
    
