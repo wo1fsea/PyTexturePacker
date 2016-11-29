@@ -1,10 +1,20 @@
+# -*- coding: utf-8 -*-
+"""----------------------------------------------------------------------------
+Author:
+    Huang Quanyong (wo1fSea)
+    quanyongh@foxmail.com
+Date:
+    2016/11/10
+Description:
+    TestRect.py
+----------------------------------------------------------------------------"""
+
 import unittest
 import random
 from PyTexturePacker import Rect
 
 
 class TestRect(unittest.TestCase):
-
     def setUp(self):
         self.x = random.randint(0, 1024)
         self.y = random.randint(0, 1024)
@@ -88,6 +98,7 @@ class TestRect(unittest.TestCase):
 
         test_object = Rect.Rect(self.x, self.y - self.h, self.w, self.h)
         self.assertEqual(self.test_object.is_overlaped(test_object), False)
+
 
 if __name__ == '__main__':
     unittest.main()

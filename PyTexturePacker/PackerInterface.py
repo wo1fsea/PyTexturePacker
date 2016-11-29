@@ -9,6 +9,7 @@ Description:
     PackerInterface.py
 ----------------------------------------------------------------------------"""
 
+
 def multi_pack_handler(args):
     packer, args = args
 
@@ -49,18 +50,12 @@ class PackerInterface(object):
     def pack(self, input_images, output_name, output_path=""):
         raise NotImplementedError
 
-
     def multi_pack(self, pack_args_list):
         import multiprocessing
 
         pool_size = multiprocessing.cpu_count() * 2
         pool = multiprocessing.Pool(processes=pool_size)
 
-        pack_handler_args = []
-        for pack_args in pack_args_list:
-            pack_handler_args.append((self, pack_args))
-
-        pool.map(multi_pack_handler, pack_handler_args)
+        pool.map(multi_pack_handler, zip([self] * len(pack_args_list), pack_args_list))
         pool.close()
         pool.join()
-

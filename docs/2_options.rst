@@ -5,6 +5,8 @@ Options
 Packer Setting
 ==============
 
+This chapter describes the options used to create a MaxRectsBinPacker.
+
 bg_color
 --------
 
