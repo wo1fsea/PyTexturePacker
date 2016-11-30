@@ -18,8 +18,8 @@ class TestRect(unittest.TestCase):
     def setUp(self):
         self.x = random.randint(0, 1024)
         self.y = random.randint(0, 1024)
-        self.w = random.randint(0, 1024)
-        self.h = random.randint(0, 1024)
+        self.w = random.randint(1, 1024)
+        self.h = random.randint(1, 1024)
 
         self.test_object = Rect.Rect(self.x, self.y, self.w, self.h)
 
