@@ -86,7 +86,42 @@ class TestMaxRects(unittest.TestCase):
         self._test_expand2()
 
     def test_cut(self):
-        pass
+        w = h = 2
+        self.test_object = MaxRects.MaxRects(w, h)
+        main = Rect.Rect(1, 1, 3, 3)
+
+        sub0 = Rect.Rect(0, 1, 1, 1)
+        sub1 = Rect.Rect(1, 0, 1, 1)
+        sub2 = Rect.Rect(0, 3, 1, 1)
+        sub3 = Rect.Rect(3, 0, 1, 1)
+
+        self.assertSequenceEqual(self.test_object.cut(main, sub0), [main])
+        self.assertSequenceEqual(self.test_object.cut(main, sub1), [main])
+        self.assertSequenceEqual(self.test_object.cut(main, sub2), [main])
+        self.assertSequenceEqual(self.test_object.cut(main, sub3), [main])
+
+        self.assertSequenceEqual(self.test_object.cut(main, main), [])
+
+        sub4 = Rect.Rect(2, 2, 1, 1)
+
+        self.assertSequenceEqual(self.test_object.cut(main, sub4), [Rect.Rect(1, 1, 1, 3),
+                                                                    Rect.Rect(1, 1, 3, 1),
+                                                                    Rect.Rect(3, 1, 1, 3),
+                                                                    Rect.Rect(1, 3, 3, 1)])
 
     def test_rank(self):
-        pass
+        w = h = 2
+        main = Rect.Rect(0, 0, 1, 2)
+        self.test_object = MaxRects.MaxRects(w, h)
+
+        r0 = self.test_object.rank(main, Rect.Rect(0, 0, 0.9, 1), self.test_object.RANK_BSSF)
+        r1 = self.test_object.rank(main, Rect.Rect(0, 0, 0.1, 1.9), self.test_object.RANK_BSSF)
+        self.assertLess(r0, r1)
+
+        r0 = self.test_object.rank(main, Rect.Rect(0, 0, 0.1, 1.9), self.test_object.RANK_BLSF)
+        r1 = self.test_object.rank(main, Rect.Rect(0, 0, 0.9, 1), self.test_object.RANK_BLSF)
+        self.assertLess(r0, r1)
+
+        r0 = self.test_object.rank(main, Rect.Rect(0, 0, 0.5, 1.5), self.test_object.RANK_BAF)
+        r1 = self.test_object.rank(main, Rect.Rect(0, 0, 0.1, 1.9), self.test_object.RANK_BAF)
+        self.assertLess(r0, r1)
