@@ -207,10 +207,7 @@ class MaxRects(object):
             center_offset = (0, 0)
             if image_rect.trimmed:
                 center_offset = (image_rect.source_box[0] + width / 2. - image_rect.source_size[0] / 2.,
-                          - (image_rect.source_box[1] + height / 2. - image_rect.source_size[1] / 2.))
-
-            # if image_rect.rotated:
-            #     center_offset = (-center_offset[1], center_offset[0])
+                                 - (image_rect.source_box[1] + height / 2. - image_rect.source_size[1] / 2.))
 
             path = image_rect.image_path
             _, path = os.path.split(path)
@@ -219,7 +216,8 @@ class MaxRects(object):
                 frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, width, height),
                 offset="{%d,%d}" % center_offset,
                 rotated=bool(image_rect.rotated),
-                sourceColorRect="{{%d,%d},{%d,%d}}" % (image_rect.source_box[0], image_rect.source_box[1], width, height) ,
+                sourceColorRect="{{%d,%d},{%d,%d}}" % (
+                    image_rect.source_box[0], image_rect.source_box[1], width, height),
                 sourceSize="{%d,%d}" % image_rect.source_size,
             )
 

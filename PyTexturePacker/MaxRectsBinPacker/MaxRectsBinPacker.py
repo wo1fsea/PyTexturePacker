@@ -46,14 +46,12 @@ def cal_init_size(area, min_width, min_height, max_width, max_height):
 
     for j in range(start_j, len(SIZE_SEQUENCE)):
         l = SIZE_SEQUENCE[j]
-        if (short != -1 and long != -1) or \
-           l > max_long:
+        if (short != -1 and long != -1) or l > max_long:
             break
 
         for i in range(start_i, j + 1):
             s = SIZE_SEQUENCE[i]
-            if (short != -1 and long != -1) or \
-               s > max_short:
+            if (short != -1 and long != -1) or s > max_short:
                 break
 
             if area <= l * s:
@@ -110,7 +108,8 @@ class MaxRectsBinPacker(PackerInterface):
             output_image_list.append(packed_image)
             output_plist_list.append(packed_plist)
 
-        assert "%d" in output_name or len(output_plist_list) == 1, 'more than one output image, but no "%d" in output_name'
+        assert "%d" in output_name or len(
+            output_plist_list) == 1, 'more than one output image, but no "%d" in output_name'
 
         if "%d" not in output_name:
             Utils.save_plist(output_plist_list[0], os.path.join(output_path, "%s.plist" % output_name))
@@ -133,7 +132,7 @@ class MaxRectsBinPacker(PackerInterface):
 
         if self.enable_rotated:
             if min(min_width, min_height) > min(self.max_width, self.max_height) or \
-               max(min_width, min_height) > max(self.max_width, self.max_height):
+                            max(min_width, min_height) > max(self.max_width, self.max_height):
                 raise ValueError("size of image is larger than max size.")
         else:
             if min_height > self.max_height or min_width > self.max_width:
@@ -180,7 +179,8 @@ class MaxRectsBinPacker(PackerInterface):
                     while MAX_RANK == best_rank:
                         if max_rect.expand():
                             best_max_rects = i
-                            best_index, best_rank, best_rotated = max_rect.find_best_rank(image_rect, self.enable_rotated)
+                            best_index, best_rank, best_rotated = max_rect.find_best_rank(image_rect,
+                                                                                          self.enable_rotated)
                         else:
                             break
                     if MAX_RANK != best_rank:
@@ -188,10 +188,12 @@ class MaxRectsBinPacker(PackerInterface):
                 if MAX_RANK == best_rank:
                     max_rects_list.append(MaxRects(force_square=self.force_square, shape_padding=self.shape_padding))
                     best_max_rects = len(max_rects_list) - 1
-                    best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect, self.enable_rotated)
+                    best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect,
+                                                                                            self.enable_rotated)
                     while MAX_RANK == best_rank:
                         max_rects_list[-1].expand()
-                        best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect, self.enable_rotated)
+                        best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect,
+                                                                                                self.enable_rotated)
 
             if best_rotated:
                 image_rect.rotate()
