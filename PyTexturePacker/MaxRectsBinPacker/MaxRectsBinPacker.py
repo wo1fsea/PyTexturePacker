@@ -18,10 +18,13 @@ from .MaxRects import MaxRects, MAX_RANK
 SIZE_SEQUENCE = [2 ** ind for ind in range(32)]
 
 
-def calculate_area(image_rect_list):
+def calculate_area(image_rect_list, inner_padding):
     area = 0
     for image_rect in image_rect_list:
-        area += image_rect.area
+        area += image_rect.area + \
+                image_rect.width * inner_padding + \
+                image_rect.height * inner_padding + \
+                inner_padding ** 2
     return area
 
 
@@ -130,6 +133,9 @@ class MaxRectsBinPacker(PackerInterface):
             if min_height < image_rect.height:
                 min_height = image_rect.height
 
+        min_width += self.inner_padding
+        min_height += self.inner_padding
+
         if self.enable_rotated:
             if min(min_width, min_height) > min(self.max_width, self.max_height) or \
                             max(min_width, min_height) > max(self.max_width, self.max_height):
@@ -139,7 +145,7 @@ class MaxRectsBinPacker(PackerInterface):
                 raise ValueError("size of image is larger than max size.")
 
         max_rects_list = []
-        area = calculate_area(image_rect_list)
+        area = calculate_area(image_rect_list, self.inner_padding)
         w, h = cal_init_size(area, min_width, min_height, self.max_width, self.max_height)
 
         max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height,
