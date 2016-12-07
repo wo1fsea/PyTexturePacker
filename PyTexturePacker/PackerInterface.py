@@ -24,7 +24,7 @@ class PackerInterface(object):
     """
 
     def __init__(self, bg_color=0x00000000, texture_format=".png", max_width=4096, max_height=4096, enable_rotated=True,
-                 force_square=False, border_padding=0, shape_padding=0, inner_padding=0, trim_mode=0, reduce_border_artifacts=False):
+                 force_square=False, border_padding=2, shape_padding=2, inner_padding=0, trim_mode=0, reduce_border_artifacts=False):
         """
         :param bg_color:
         :param texture_format:
