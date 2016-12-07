@@ -24,7 +24,7 @@ class PackerInterface(object):
     """
 
     def __init__(self, bg_color=0x00000000, texture_format=".png", max_width=4096, max_height=4096, enable_rotated=True,
-                 force_square=False, shape_padding=0, trim_mode=0, reduce_border_artifacts=False):
+                 force_square=False, border_padding=2, shape_padding=2, inner_padding=0, trim_mode=0, reduce_border_artifacts=False):
         """
         :param bg_color:
         :param texture_format:
@@ -32,7 +32,9 @@ class PackerInterface(object):
         :param max_height:
         :param enable_rotated:
         :param force_square:
+        :param border_padding:
         :param shape_padding:
+        :param inner_padding:
         :param trim_mode:
         :param reduce_border_artifacts:
         """
@@ -43,7 +45,9 @@ class PackerInterface(object):
         self.max_height = max_height
         self.enable_rotated = enable_rotated
         self.force_square = force_square
+        self.border_padding = border_padding
         self.shape_padding = shape_padding
+        self.inner_padding = inner_padding
         self.trim_mode = trim_mode
         self.reduce_border_artifacts = reduce_border_artifacts
 
