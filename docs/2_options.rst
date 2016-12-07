@@ -39,11 +39,26 @@ force_square
 
 Forces the texture to have a squared size.
 
+border_padding
+--------------
+
+Border padding is the space between the sprites and the border of the sprite sheet. Value adds transparent pixels around the borders of the sprite sheet. Default is 2.
+
 shape_padding
 -------------
 
 Shape padding is the space between sprites. Value adds transparent pixels between sprites to avoid artifacts from neighbor sprites. The transparent pixels are not added to the sprites. Default is 2.
 Use a value of at least 2 to avoid dragging in pixels from neighbor sprites when using OpenGL rendering.
+
+inner_padding
+--------------
+
+Adds transparent pixels to the inside of the sprite, growing it. Default is 0.
+
+There are two uses for this:
+
+- It can help in preventing cut-off artifacts near the edges of scaled sprites. E.g. if your sprite has a few pixels along its own boundaries, scaling the sprite up or down won't let these pixels appear as gaps or cuts.
+- It considerably reduces aliasing along the polygon edges when rotating trimmed or cropped sprites. E.g. if your sprite has many pixels along its own boundaries, it will be drawn more smoothly when rotating it.
 
 trim_mode
 ---------
