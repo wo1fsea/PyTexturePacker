@@ -5,7 +5,7 @@ PyTexturePacker is an open source python package, released under the MIT License
 
 A subset of feature of TexturePacker_ has been implemented in this package.
 
-.. _TexturePacker: https://www.codeandweb.com/texturepacker)
+.. _TexturePacker: https://www.codeandweb.com/texturepacker
 
 Features
 ========
@@ -99,7 +99,7 @@ Shape padding is the space between sprites. Value adds transparent pixels betwee
 Use a value of at least 2 to avoid dragging in pixels from neighbor sprites when using OpenGL rendering.
 
 inner_padding
---------------
+-------------
 
 Adds transparent pixels to the inside of the sprite, growing it. Default is 0.
 
@@ -150,9 +150,9 @@ The project is released under the terms of MIT License. You may find the content
 
 
 .. |build-status| image:: https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master
-:target: https://travis-ci.org/wo1fsea/PyTexturePacker
-:alt: Build status
+    :target: https://travis-ci.org/wo1fsea/PyTexturePacker
+    :alt: Build status
 .. |docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
-:target: http://pytexturepacker.readthedocs.io/
-:alt: Documentation Status
+    :target: http://pytexturepacker.readthedocs.io/
+    :alt: Documentation Status
    
