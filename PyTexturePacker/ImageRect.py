@@ -49,7 +49,10 @@ class ImageRect(Rect):
             return tuple(0, 0, self.width, self.height)
 
     def load_image(self, image_path):
-        self.image = Image.open(image_path)
+        image = Image.open(image_path)
+        self.image = image.copy()
+        image.close()
+
         self.image_path = image_path
 
         self.x, self.y = 0, 0
