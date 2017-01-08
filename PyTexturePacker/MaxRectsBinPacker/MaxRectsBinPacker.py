@@ -81,12 +81,13 @@ class MaxRectsBinPacker(PackerInterface):
         """
         super(MaxRectsBinPacker, self).__init__(*args, **kwargs)
 
-    def pack(self, input_images, output_name, output_path=""):
+    def pack(self, input_images, output_name, output_path="", input_base_path=None):
         """
 
         :param input_images:
         :param output_name:
         :param output_path:
+        :param input_base_path:
         :return:
         """
 
@@ -106,7 +107,7 @@ class MaxRectsBinPacker(PackerInterface):
 
         for i, max_rect in enumerate(max_rect_list):
             packed_image = max_rect.dump_image(self.bg_color)
-            packed_plist = max_rect.dump_plist()
+            packed_plist = max_rect.dump_plist(input_base_path)
 
             output_image_list.append(packed_image)
             output_plist_list.append(packed_plist)

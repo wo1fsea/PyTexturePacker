@@ -51,7 +51,7 @@ class PackerInterface(object):
         self.trim_mode = trim_mode
         self.reduce_border_artifacts = reduce_border_artifacts
 
-    def pack(self, input_images, output_name, output_path=""):
+    def pack(self, input_images, output_name, output_path="", input_base_path=None):
         raise NotImplementedError
 
     def multi_pack(self, pack_args_list):
