@@ -71,23 +71,23 @@ def cal_init_size(area, min_width, min_height, max_width, max_height):
 
 class MaxRectsBinPacker(PackerInterface):
     """
-
+    a bin packer using MaxRectsBinPack algorithm
     """
 
     def __init__(self, *args, **kwargs):
         """
-
-        :param args:
+        init a MaxRectsBinPacker
+        :param args: see PackerInterface
         """
         super(MaxRectsBinPacker, self).__init__(*args, **kwargs)
 
     def pack(self, input_images, output_name, output_path="", input_base_path=None):
         """
 
-        :param input_images:
-        :param output_name:
-        :param output_path:
-        :param input_base_path:
+        :param input_images: a list of input image paths or a input dir path
+        :param output_name: the output file name
+        :param output_path: the output file path
+        :param input_base_path: the base path of input files
         :return:
         """
 

@@ -16,7 +16,7 @@ from . import Utils
 
 class ImageRect(Rect):
     """
-    Image Rect data
+    image rect data
     """
 
     def __init__(self, image_path=None):

@@ -15,4 +15,11 @@ TYPE_MAX_RECTS_BIN_PACK = MaxRectsBinPacker
 
 
 def create(packer_type=TYPE_MAX_RECTS_BIN_PACK, *args, **kwargs):
+    """
+    create a texture packer
+    :param packer_type: the type of packer to create
+    :param args:
+    :param kwargs:
+    :return:
+    """
     return MaxRectsBinPacker(*args, **kwargs)

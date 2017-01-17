@@ -51,7 +51,7 @@ Shape padding is the space between sprites. Value adds transparent pixels betwee
 Use a value of at least 2 to avoid dragging in pixels from neighbor sprites when using OpenGL rendering.
 
 inner_padding
---------------
+-------------
 
 Adds transparent pixels to the inside of the sprite, growing it. Default is 0.
 
