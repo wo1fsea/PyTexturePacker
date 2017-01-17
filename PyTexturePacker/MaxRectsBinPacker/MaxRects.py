@@ -218,7 +218,7 @@ class MaxRects(object):
 
         return True
 
-    def dump_plist(self, input_base_path=None):
+    def dump_plist(self, texture_file_name="", input_base_path=None):
         import os
 
         plist_data = {}
@@ -251,8 +251,8 @@ class MaxRects(object):
         plist_data["frames"] = frames
         plist_data["metadata"] = dict(
             format=int(2),
-            textureFileName="",
-            realTextureFileName="",
+            textureFileName=texture_file_name,
+            realTextureFileName=texture_file_name,
             size="{%d,%d}" % self.size,
         )
 
