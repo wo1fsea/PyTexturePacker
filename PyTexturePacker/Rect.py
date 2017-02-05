@@ -12,7 +12,7 @@ Description:
 
 class Rect(object):
     """
-    Rect type data
+    rect type data
 
     (left, top)
             +----+

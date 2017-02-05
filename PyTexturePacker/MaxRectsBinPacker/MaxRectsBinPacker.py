@@ -71,22 +71,23 @@ def cal_init_size(area, min_width, min_height, max_width, max_height):
 
 class MaxRectsBinPacker(PackerInterface):
     """
-
+    a bin packer using MaxRectsBinPack algorithm
     """
 
     def __init__(self, *args, **kwargs):
         """
-
-        :param args:
+        init a MaxRectsBinPacker
+        :param args: see PackerInterface
         """
         super(MaxRectsBinPacker, self).__init__(*args, **kwargs)
 
-    def pack(self, input_images, output_name, output_path=""):
+    def pack(self, input_images, output_name, output_path="", input_base_path=None):
         """
 
-        :param input_images:
-        :param output_name:
-        :param output_path:
+        :param input_images: a list of input image paths or a input dir path
+        :param output_name: the output file name
+        :param output_path: the output file path
+        :param input_base_path: the base path of input files
         :return:
         """
 
@@ -101,29 +102,19 @@ class MaxRectsBinPacker(PackerInterface):
 
         max_rect_list = self._pack(image_rects)
 
-        output_plist_list = []
-        output_image_list = []
+        assert "%d" in output_name or len(max_rect_list) == 1, 'more than one output image, but no "%d" in output_name'
 
         for i, max_rect in enumerate(max_rect_list):
+            texture_file_name = output_name if "%d" not in output_name else output_name % i
+
+            packed_plist = max_rect.dump_plist("%s%s" % (texture_file_name, self.texture_format), input_base_path)
             packed_image = max_rect.dump_image(self.bg_color)
-            packed_plist = max_rect.dump_plist()
 
-            output_image_list.append(packed_image)
-            output_plist_list.append(packed_plist)
+            if self.reduce_border_artifacts:
+                packed_image = Utils.alpha_bleeding(packed_image)
 
-        assert "%d" in output_name or len(
-            output_plist_list) == 1, 'more than one output image, but no "%d" in output_name'
-
-        if "%d" not in output_name:
-            Utils.save_plist(output_plist_list[0], os.path.join(output_path, "%s.plist" % output_name))
-            Utils.save_image(output_image_list[0], os.path.join(output_path, "%s.png" % output_name))
-        else:
-            for i, plist in enumerate(output_plist_list):
-                Utils.save_plist(plist, os.path.join(output_path, "%s.plist" % output_name % i))
-            for i, image in enumerate(output_image_list):
-                if self.reduce_border_artifacts:
-                    image = Utils.alpha_bleeding(image)
-                Utils.save_image(image, os.path.join(output_path, "%s%s" % (output_name, self.texture_format) % i))
+            Utils.save_plist(packed_plist, os.path.join(output_path, "%s.plist" % texture_file_name))
+            Utils.save_image(packed_image, os.path.join(output_path, "%s%s" % (texture_file_name, self.texture_format)))
 
     def _init_max_rects_list(self, image_rect_list):
         min_width, min_height = 0, 0
