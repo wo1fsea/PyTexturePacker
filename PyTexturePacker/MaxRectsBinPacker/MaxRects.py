@@ -204,16 +204,22 @@ class MaxRects(object):
         image_rect.x, image_rect.y = rect.x + self.inner_padding, rect.y + self.inner_padding
 
         _max_rect_list = []
+        _new_max_rect_list = []
         for i, rect in enumerate(self.max_rect_list):
-            _max_rect_list.extend(self.cut(rect, image_rect))
+            if image_rect.is_overlaped(rect):
+                _new_max_rect_list.extend(self.cut(rect, image_rect))
+            else:
+                _max_rect_list.append(rect)
 
-        self.max_rect_list = _max_rect_list
-        self.max_rect_list = list(filter(self._max_rect_list_pruning, _max_rect_list))
+        self.max_rect_list = _new_max_rect_list
+        self.max_rect_list = list(filter(self._max_rect_list_pruning, _new_max_rect_list))
+        self.max_rect_list.extend(_max_rect_list)
+
         self.image_rect_list.append(image_rect)
 
     def _max_rect_list_pruning(self, rect):
         for max_rect in self.max_rect_list:
-            if rect != max_rect and rect in max_rect:
+            if rect in max_rect and rect != max_rect:
                 return False
 
         return True
