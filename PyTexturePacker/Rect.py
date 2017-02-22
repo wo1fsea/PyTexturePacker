@@ -67,19 +67,22 @@ class Rect(object):
         return Rect(self.x, self.y, self.width, self.height)
 
     def is_overlaped(self, rect):
-        return not (self.left >= rect.right or
-                    self.top >= rect.bottom or
-                    self.right <= rect.left or
-                    self.bottom <= rect.top)
+        return not (self.x >= rect.x + rect.width or
+                    self.y >= rect.y + rect.height or
+                    self.x + self.width <= rect.x or
+                    self.y + self.height <= rect.y)
 
     def __contains__(self, rect):
-        return (self.left <= rect.left and
-                self.top <= rect.top and
-                self.right >= rect.right and
-                self.bottom >= rect.bottom)
+        return (self.x <= rect.x and
+                self.y <= rect.y and
+                self.x + self.width >= rect.x + rect.width and
+                self.y + self.height >= rect.y + rect.height)
 
     def __ne__(self, other):
-        return not self == other
+        return (self.x != other.x or
+                self.y != other.y or
+                self.width != other.width or
+                self.height != other.height)
 
     def __eq__(self, other):
         return (self.x == other.x and
