@@ -7,7 +7,7 @@ PyTexturePacker is an open source python package to create sprite sheets or spri
 
 A subset of feature of TexturePacker_ has been implemented in this package.
 
-.. _TexturePacker: https://www.codeandweb.com/texturepacker)
+.. _TexturePacker: https://www.codeandweb.com/texturepacker
 
 MaxRectsBinPack algorithm is used to generate sprite sheet in this package.
 
