@@ -4,7 +4,7 @@ from setuptools import find_packages
 setup(
     name='PyTexturePacker',
     packages=find_packages(exclude=['docs', 'tests', 'test_image']),
-    version='0.0.6',
+    version='0.0.7',
     description='an package to create sprite sheets or sprite atlases',
     author='Quanyong Huang',
     author_email='quanyongh@foxmail.com',
