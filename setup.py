@@ -9,7 +9,7 @@ setup(
     author='Quanyong Huang',
     author_email='quanyongh@foxmail.com',
     url='https://github.com/wo1fsea/PyTexturePacker',
-    download_url='https://github.com/wo1fsea/PyTexturePacker/releases/tag/v0.0.6',
+    download_url='https://github.com/wo1fsea/PyTexturePacker/releases/tag/v0.0.7',
     keywords=['TexturePacker', 'cocos2d'],
     license='MIT',
     install_requires=['Pillow'],
