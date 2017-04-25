@@ -12,7 +12,7 @@ Description:
 import os
 
 from .. import Utils
-from ..PackerInterface import PackerInterface
+from ..PackerInterface.PackerInterface import PackerInterface
 from .MaxRects import MaxRects, MAX_RANK
 
 SIZE_SEQUENCE = [2 ** ind for ind in range(32)]
