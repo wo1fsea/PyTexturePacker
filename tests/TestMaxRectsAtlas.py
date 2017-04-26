@@ -10,7 +10,7 @@ Description:
 ----------------------------------------------------------------------------"""
 
 import unittest
-from PyTexturePacker.MaxRectsBinPacker import MaxRectsAtlas
+from PyTexturePacker.MaxRectsPacker import MaxRectsAtlas
 from PyTexturePacker import Rect
 
 

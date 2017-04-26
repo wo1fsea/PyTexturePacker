@@ -9,9 +9,9 @@ Description:
     Packer.py
 ----------------------------------------------------------------------------"""
 
-from .MaxRectsBinPacker.MaxRectsBinPacker import MaxRectsBinPacker
+from .MaxRectsPacker.MaxRectsPacker import MaxRectsPacker
 
-TYPE_MAX_RECTS_BIN_PACK = MaxRectsBinPacker
+TYPE_MAX_RECTS_BIN_PACK = MaxRectsPacker
 
 
 def create(packer_type=TYPE_MAX_RECTS_BIN_PACK, *args, **kwargs):
@@ -22,4 +22,4 @@ def create(packer_type=TYPE_MAX_RECTS_BIN_PACK, *args, **kwargs):
     :param kwargs:
     :return:
     """
-    return MaxRectsBinPacker(*args, **kwargs)
+    return MaxRectsPacker(*args, **kwargs)

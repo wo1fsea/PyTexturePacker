@@ -6,7 +6,7 @@ Author:
 Date:
     2016/10/19
 Description:
-    MaxRectsBinPacker.py
+    MaxRectsPacker.py
 ----------------------------------------------------------------------------"""
 
 import os
@@ -69,17 +69,17 @@ def cal_init_size(area, min_width, min_height, max_width, max_height):
         return tuple((short, long))
 
 
-class MaxRectsBinPacker(PackerInterface):
+class MaxRectsPacker(PackerInterface):
     """
     a bin packer using MaxRectsBinPack algorithm
     """
 
     def __init__(self, *args, **kwargs):
         """
-        init a MaxRectsBinPacker
+        init a MaxRectsPacker
         :param args: see PackerInterface
         """
-        super(MaxRectsBinPacker, self).__init__(*args, **kwargs)
+        super(MaxRectsPacker, self).__init__(*args, **kwargs)
 
     def pack(self, input_images, output_name, output_path="", input_base_path=None):
         """
