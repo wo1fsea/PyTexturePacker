@@ -34,28 +34,14 @@ class MaxRectsAtlas(AtlasInterface):
     RANK_BLSF = 1
     RANK_BAF = 3
 
-    def __init__(self, width=1, height=1, max_width=MAX_WIDTH, max_height=MAX_HEIGHT,
-                 force_square=False, border_padding=0, shape_padding=0, inner_padding=0):
-        super(MaxRectsAtlas, self).__init__()
+    def __init__(self, *args):
+        super(MaxRectsAtlas, self).__init__(*args)
 
-        if force_square:
-            width = height = max(width, height)
-            max_width = max_height = max(max_width, max_height)
-
-        self.size = (width, height)
-        self.max_size = (max_width, max_height)
-
-        self.border_padding = border_padding
-        self.shape_padding = shape_padding
-        self.inner_padding = inner_padding
-
-        self.force_square = force_square
-
+        width, height = self.size
         self.max_rect_list = [Rect(0 + self.border_padding,
                                    0 + self.border_padding,
                                    width - 2 * self.border_padding,
                                    height - 2 * self.border_padding)]
-        self.image_rect_list = []
 
     def _is_in_max_size(self, size):
         return size[0] <= self.max_size[0] and size[1] <= self.max_size[1]
