@@ -13,7 +13,7 @@ import os
 
 from .. import Utils
 from ..PackerInterface.PackerInterface import PackerInterface
-from .MaxRects import MaxRects, MAX_RANK
+from .MaxRectsAtlas import MaxRectsAtlas, MAX_RANK
 
 SIZE_SEQUENCE = [2 ** ind for ind in range(32)]
 
@@ -139,17 +139,17 @@ class MaxRectsBinPacker(PackerInterface):
         area = calculate_area(image_rect_list, self.inner_padding)
         w, h = cal_init_size(area, min_width, min_height, self.max_width, self.max_height)
 
-        max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height,
-                                       force_square=self.force_square, border_padding=self.border_padding,
-                                       shape_padding=self.shape_padding, inner_padding=self.inner_padding))
+        max_rects_list.append(MaxRectsAtlas(w, h, self.max_width, self.max_height,
+                                            force_square=self.force_square, border_padding=self.border_padding,
+                                            shape_padding=self.shape_padding, inner_padding=self.inner_padding))
 
         area = area - w * h
         while area > 0:
             w, h = cal_init_size(area, 0, 0, self.max_width, self.max_height)
             area = area - w * h
-            max_rects_list.append(MaxRects(w, h, self.max_width, self.max_height,
-                                           force_square=self.force_square, border_padding=self.border_padding,
-                                           shape_padding=self.shape_padding, inner_padding=self.inner_padding))
+            max_rects_list.append(MaxRectsAtlas(w, h, self.max_width, self.max_height,
+                                                force_square=self.force_square, border_padding=self.border_padding,
+                                                shape_padding=self.shape_padding, inner_padding=self.inner_padding))
 
         return max_rects_list
 
@@ -185,8 +185,8 @@ class MaxRectsBinPacker(PackerInterface):
                     if MAX_RANK != best_rank:
                         break
                 if MAX_RANK == best_rank:
-                    max_rects_list.append(MaxRects(force_square=self.force_square, border_padding=self.border_padding,
-                                                   shape_padding=self.shape_padding, inner_padding=self.inner_padding))
+                    max_rects_list.append(MaxRectsAtlas(force_square=self.force_square, border_padding=self.border_padding,
+                                                        shape_padding=self.shape_padding, inner_padding=self.inner_padding))
                     best_max_rects = len(max_rects_list) - 1
                     best_index, best_rank, best_rotated = max_rects_list[-1].find_best_rank(image_rect,
                                                                                             self.enable_rotated)

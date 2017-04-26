@@ -6,15 +6,15 @@ Author:
 Date:
     2016/11/29
 Description:
-    TestMaxRects.py
+    TestMaxRectsAtlas.py
 ----------------------------------------------------------------------------"""
 
 import unittest
-from PyTexturePacker.MaxRectsBinPacker import MaxRects
+from PyTexturePacker.MaxRectsBinPacker import MaxRectsAtlas
 from PyTexturePacker import Rect
 
 
-class TestMaxRects(unittest.TestCase):
+class TestMaxRectsAtlas(unittest.TestCase):
     def setUp(self):
         pass
 
@@ -23,41 +23,41 @@ class TestMaxRects(unittest.TestCase):
 
     def _test_expand1(self):
         def gen_and_expand(width, height, method):
-            tmp = MaxRects.MaxRects(w, h)
+            tmp = MaxRectsAtlas.MaxRectsAtlas(w, h)
             tmp.expand(method)
             return tmp
 
         w = h = 2
-        m = MaxRects.MaxRects.EXPAND_WIDTH
+        m = MaxRectsAtlas.MaxRectsAtlas.EXPAND_WIDTH
         test_object = gen_and_expand(w, h, m)
         self.assertSequenceEqual(test_object.size, (w * 2, h))
 
         w = h = 2
-        m = MaxRects.MaxRects.EXPAND_HEIGHT
+        m = MaxRectsAtlas.MaxRectsAtlas.EXPAND_HEIGHT
         test_object = gen_and_expand(w, h, m)
         self.assertSequenceEqual(test_object.size, (w, h * 2))
 
         w = 2
         h = 1
-        m = MaxRects.MaxRects.EXPAND_SHORT_SIDE
+        m = MaxRectsAtlas.MaxRectsAtlas.EXPAND_SHORT_SIDE
         test_object = gen_and_expand(w, h, m)
         self.assertSequenceEqual(test_object.size, (w, h * 2))
 
         w = 2
         h = 1
-        m = MaxRects.MaxRects.EXPAND_LONG_SIDE
+        m = MaxRectsAtlas.MaxRectsAtlas.EXPAND_LONG_SIDE
         test_object = gen_and_expand(w, h, m)
         self.assertSequenceEqual(test_object.size, (w * 2, h))
 
         w = h = 2
-        m = MaxRects.MaxRects.EXPAND_BOTH
+        m = MaxRectsAtlas.MaxRectsAtlas.EXPAND_BOTH
         test_object = gen_and_expand(w, h, m)
         self.assertSequenceEqual(test_object.size, (w * 2, h * 2))
 
     def _test_expand2(self):
         w = h = 2
-        m = MaxRects.MaxRects.EXPAND_BOTH
-        test_object = MaxRects.MaxRects(w, h)
+        m = MaxRectsAtlas.MaxRectsAtlas.EXPAND_BOTH
+        test_object = MaxRectsAtlas.MaxRectsAtlas(w, h)
         test_object.max_rect_list = []
         test_object.max_rect_list.append(Rect.Rect(0, 0, 2, 2))
         test_object.expand(m)
@@ -66,8 +66,8 @@ class TestMaxRects(unittest.TestCase):
         self.assertEqual(test_object.max_rect_list[0].height, 4)
 
         w = h = 2
-        m = MaxRects.MaxRects.EXPAND_BOTH
-        test_object = MaxRects.MaxRects(w, h)
+        m = MaxRectsAtlas.MaxRectsAtlas.EXPAND_BOTH
+        test_object = MaxRectsAtlas.MaxRectsAtlas(w, h)
         test_object.max_rect_list = []
         test_object.max_rect_list.append(Rect.Rect(0, 0, 1, 1))
         test_object.expand(m)
@@ -87,7 +87,7 @@ class TestMaxRects(unittest.TestCase):
 
     def test_cut(self):
         w = h = 2
-        self.test_object = MaxRects.MaxRects(w, h)
+        self.test_object = MaxRectsAtlas.MaxRectsAtlas(w, h)
         main = Rect.Rect(1, 1, 3, 3)
 
         sub0 = Rect.Rect(0, 1, 1, 1)
@@ -112,7 +112,7 @@ class TestMaxRects(unittest.TestCase):
     def test_rank(self):
         w = h = 2
         main = Rect.Rect(0, 0, 1, 2)
-        self.test_object = MaxRects.MaxRects(w, h)
+        self.test_object = MaxRectsAtlas.MaxRectsAtlas(w, h)
 
         r0 = self.test_object.rank(main, Rect.Rect(0, 0, 0.9, 1), self.test_object.RANK_BSSF)
         r1 = self.test_object.rank(main, Rect.Rect(0, 0, 0.1, 1.9), self.test_object.RANK_BSSF)
