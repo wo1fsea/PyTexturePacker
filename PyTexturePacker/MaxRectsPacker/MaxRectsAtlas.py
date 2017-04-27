@@ -34,8 +34,8 @@ class MaxRectsAtlas(AtlasInterface):
     RANK_BLSF = 1
     RANK_BAF = 3
 
-    def __init__(self, *args):
-        super(MaxRectsAtlas, self).__init__(*args)
+    def __init__(self, *args, **kwargs):
+        super(MaxRectsAtlas, self).__init__(*args, **kwargs)
 
         width, height = self.size
         self.max_rect_list = [Rect(0 + self.border_padding,

@@ -9,9 +9,6 @@ Description:
     MaxRectsPacker.py
 ----------------------------------------------------------------------------"""
 
-import os
-
-from .. import Utils
 from ..PackerInterface.PackerInterface import PackerInterface
 from .MaxRectsAtlas import MaxRectsAtlas, MAX_RANK
 
@@ -80,41 +77,6 @@ class MaxRectsPacker(PackerInterface):
         :param args: see PackerInterface
         """
         super(MaxRectsPacker, self).__init__(*args, **kwargs)
-
-    def pack(self, input_images, output_name, output_path="", input_base_path=None):
-        """
-
-        :param input_images: a list of input image paths or a input dir path
-        :param output_name: the output file name
-        :param output_path: the output file path
-        :param input_base_path: the base path of input files
-        :return:
-        """
-
-        if isinstance(input_images, (tuple, list)):
-            image_rects = Utils.load_images_from_paths(input_images)
-        else:
-            image_rects = Utils.load_images_from_dir(input_images)
-
-        if self.trim_mode:
-            for image_rect in image_rects:
-                image_rect.trim(self.trim_mode)
-
-        max_rect_list = self._pack(image_rects)
-
-        assert "%d" in output_name or len(max_rect_list) == 1, 'more than one output image, but no "%d" in output_name'
-
-        for i, max_rect in enumerate(max_rect_list):
-            texture_file_name = output_name if "%d" not in output_name else output_name % i
-
-            packed_plist = max_rect.dump_plist("%s%s" % (texture_file_name, self.texture_format), input_base_path)
-            packed_image = max_rect.dump_image(self.bg_color)
-
-            if self.reduce_border_artifacts:
-                packed_image = Utils.alpha_bleeding(packed_image)
-
-            Utils.save_plist(packed_plist, os.path.join(output_path, "%s.plist" % texture_file_name))
-            Utils.save_image(packed_image, os.path.join(output_path, "%s%s" % (texture_file_name, self.texture_format)))
 
     def _init_max_rects_list(self, image_rect_list):
         min_width, min_height = 0, 0
