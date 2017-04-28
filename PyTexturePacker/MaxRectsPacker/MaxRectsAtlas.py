@@ -100,15 +100,6 @@ class MaxRectsAtlas(AtlasInterface):
         return True
 
     def cut(self, main_rect, sub_rect):
-        sub_rect = sub_rect.clone()
-        sub_rect.left -= self.inner_padding
-        sub_rect.right += self.inner_padding + self.shape_padding
-        sub_rect.top -= self.inner_padding
-        sub_rect.bottom += self.inner_padding + self.shape_padding
-
-        if not main_rect.is_overlaped(sub_rect):
-            return [main_rect, ]
-
         result = []
         if main_rect.left < sub_rect.left:
             tmp = main_rect.clone()
@@ -188,13 +179,20 @@ class MaxRectsAtlas(AtlasInterface):
 
     def place_image_rect(self, rect_index, image_rect):
         rect = self.max_rect_list[rect_index]
+
         image_rect.x, image_rect.y = rect.x + self.inner_padding, rect.y + self.inner_padding
+
+        fake_image_rect = image_rect.clone()
+        fake_image_rect.left -= self.inner_padding
+        fake_image_rect.right += self.inner_padding + self.shape_padding
+        fake_image_rect.top -= self.inner_padding
+        fake_image_rect.bottom += self.inner_padding + self.shape_padding
 
         _max_rect_list = []
         _new_max_rect_list = []
         for i, rect in enumerate(self.max_rect_list):
-            if image_rect.is_overlaped(rect):
-                _new_max_rect_list.extend(self.cut(rect, image_rect))
+            if fake_image_rect.is_overlaped(rect):
+                _new_max_rect_list.extend(self.cut(rect, fake_image_rect))
             else:
                 _max_rect_list.append(rect)
 
