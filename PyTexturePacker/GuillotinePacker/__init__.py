@@ -1,0 +1,1 @@
+from .MaxRectsPacker import MaxRectsPacker
