@@ -1,1 +1,1 @@
-from .MaxRectsPacker import MaxRectsPacker
+from .GuillotinePacker import GuillotinePacker
