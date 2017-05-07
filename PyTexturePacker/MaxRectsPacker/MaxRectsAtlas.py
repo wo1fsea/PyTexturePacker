@@ -100,6 +100,9 @@ class MaxRectsAtlas(AtlasInterface):
         return True
 
     def cut(self, main_rect, sub_rect):
+        if not main_rect.is_overlaped(sub_rect):
+            return [main_rect]
+
         result = []
         if main_rect.left < sub_rect.left:
             tmp = main_rect.clone()
