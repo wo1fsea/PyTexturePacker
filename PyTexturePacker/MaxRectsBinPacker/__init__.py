@@ -1,1 +1,0 @@
-from .MaxRectsBinPacker import MaxRectsBinPacker

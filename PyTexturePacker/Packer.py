@@ -9,12 +9,14 @@ Description:
     Packer.py
 ----------------------------------------------------------------------------"""
 
-from .MaxRectsBinPacker.MaxRectsBinPacker import MaxRectsBinPacker
+from .MaxRectsPacker.MaxRectsPacker import MaxRectsPacker
+from .GuillotinePacker.GuillotinePacker import GuillotinePacker
 
-TYPE_MAX_RECTS_BIN_PACK = MaxRectsBinPacker
+TYPE_MAX_RECTS_PACK = MaxRectsPacker
+TYPE_GUILLOTINE_PACK = GuillotinePacker
 
 
-def create(packer_type=TYPE_MAX_RECTS_BIN_PACK, *args, **kwargs):
+def create(packer_type=TYPE_MAX_RECTS_PACK, *args, **kwargs):
     """
     create a texture packer
     :param packer_type: the type of packer to create
@@ -22,4 +24,4 @@ def create(packer_type=TYPE_MAX_RECTS_BIN_PACK, *args, **kwargs):
     :param kwargs:
     :return:
     """
-    return MaxRectsBinPacker(*args, **kwargs)
+    return packer_type(*args, **kwargs)
