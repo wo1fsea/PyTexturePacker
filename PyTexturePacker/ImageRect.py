@@ -14,6 +14,7 @@ from PIL import Image
 from .Rect import Rect
 from . import Utils
 
+
 class ImageRect(Rect):
     """
     image rect data
