@@ -39,9 +39,9 @@ class MaxRectsAtlas(AtlasInterface):
 
         width, height = self.size
         self.max_rect_list = [Rect(0 + self.border_padding,
-                                   0 + self.border_padding,
-                                   width - 2 * self.border_padding,
-                                   height - 2 * self.border_padding)]
+            0 + self.border_padding,
+            width - 2 * self.border_padding,
+            height - 2 * self.border_padding)]
 
     def _is_in_max_size(self, size):
         return size[0] <= self.max_size[0] and size[1] <= self.max_size[1]
@@ -83,16 +83,16 @@ class MaxRectsAtlas(AtlasInterface):
 
         if old_size[0] != self.size[0]:
             new_rect = Rect(old_size[0] - self.border_padding,
-                            0 + self.border_padding,
-                            self.size[0] - old_size[0],
-                            self.size[1] - 2 * self.border_padding)
+                0 + self.border_padding,
+                self.size[0] - old_size[0],
+                self.size[1] - 2 * self.border_padding)
             self.max_rect_list.append(new_rect)
 
         if old_size[1] != self.size[1]:
             new_rect = Rect(0 + self.border_padding,
-                            old_size[1] - self.border_padding,
-                            self.size[0] - 2 * self.border_padding,
-                            self.size[1] - old_size[1])
+                old_size[1] - self.border_padding,
+                self.size[0] - 2 * self.border_padding,
+                self.size[1] - old_size[1])
             self.max_rect_list.append(new_rect)
 
         self.max_rect_list = list(filter(self._max_rect_list_pruning, self.max_rect_list))
@@ -146,8 +146,8 @@ class MaxRectsAtlas(AtlasInterface):
 
         assert tmp < MAX_RANK
         if tmp < 0 \
-                or main_rect.width - sub_rect.width < 2 * self.inner_padding + self.shape_padding \
-                or main_rect.height - sub_rect.height < 2 * self.inner_padding + self.shape_padding:
+                or main_rect.width - sub_rect.width < 2 * self.inner_padding \
+                or main_rect.height - sub_rect.height < 2 * self.inner_padding:
             return MAX_RANK
         else:
             return tmp
@@ -211,4 +211,3 @@ class MaxRectsAtlas(AtlasInterface):
                 return False
 
         return True
-

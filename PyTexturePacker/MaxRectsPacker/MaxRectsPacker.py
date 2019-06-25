@@ -52,23 +52,42 @@ class MaxRectsPacker(PackerInterface):
                     while MAX_RANK == best_rank:
                         if max_rect.expand():
                             best_atlas = i
-                            best_index, best_rank, best_rotated = max_rect.find_best_rank(image_rect,
-                                                                                          self.enable_rotated)
+                            best_index, best_rank, best_rotated = max_rect.find_best_rank(
+                                image_rect,
+                                self.enable_rotated
+                            )
                         else:
                             break
                     if MAX_RANK != best_rank:
                         break
                 if MAX_RANK == best_rank:
                     atlas_list.append(
-                        self.ATLAS_TYPE(force_square=self.force_square, border_padding=self.border_padding,
-                                        shape_padding=self.shape_padding, inner_padding=self.inner_padding))
+                        self.ATLAS_TYPE(
+                            max_width=self.max_width,
+                            max_height=self.max_height,
+                            force_square=self.force_square,
+                            border_padding=self.border_padding,
+                            shape_padding=self.shape_padding,
+                            inner_padding=self.inner_padding
+                        )
+                    )
                     best_atlas = len(atlas_list) - 1
-                    best_index, best_rank, best_rotated = atlas_list[-1].find_best_rank(image_rect,
-                                                                                        self.enable_rotated)
+                    best_index, best_rank, best_rotated = atlas_list[-1].find_best_rank(
+                        image_rect,
+                        self.enable_rotated
+                    )
+
                     while MAX_RANK == best_rank:
-                        atlas_list[-1].expand()
-                        best_index, best_rank, best_rotated = atlas_list[-1].find_best_rank(image_rect,
-                                                                                            self.enable_rotated)
+                        if not atlas_list[-1].expand():
+                            assert False, "can not place image [%s] in max size(%d, %d)" % (
+                                image_rect.image_path,
+                                self.max_width,
+                                self.max_height
+                            )
+                        best_index, best_rank, best_rotated = atlas_list[-1].find_best_rank(
+                            image_rect,
+                            self.enable_rotated
+                        )
 
             if best_rotated:
                 image_rect.rotate()
