@@ -155,6 +155,6 @@ The project is released under the terms of MIT License. You may find the content
 .. |docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
     :target: http://pytexturepacker.readthedocs.io/
     :alt: Documentation Status
-.. |pypi-status| image:: https://badge.fury.io/py/pytexturepacker.svg
+.. |pypi-status| image:: https://badge.fury.io/py/PyTexturePacker.svg
     :target: https://pypi.org/project/pytexturepacker/
     :alt: PyPI Status
