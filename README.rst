@@ -1,5 +1,5 @@
-PyTexturePacker |build-status| |docs-status|
-============================================
+PyTexturePacker |pypi-status| |build-status| |docs-status|
+==========================================================
 
 PyTexturePacker is an open source python package, released under the MIT License.
 
@@ -155,4 +155,6 @@ The project is released under the terms of MIT License. You may find the content
 .. |docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
     :target: http://pytexturepacker.readthedocs.io/
     :alt: Documentation Status
-   
+.. |pypi-status| image:: https://badge.fury.io/py/pytexturepacker.svg
+    :target: https://pypi.org/project/pytexturepacker/
+    :alt: PyPI Status
