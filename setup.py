@@ -10,7 +10,7 @@ setup(
     author_email='quanyongh@foxmail.com',
     url='https://github.com/wo1fsea/PyTexturePacker',
     download_url='https://github.com/wo1fsea/PyTexturePacker/releases/tag/v1.0.1',
-    keywords=['TexturePacker', 'cocos2d'],
+    keywords=['TexturePacker', 'cocos2d-x', 'sprite-sheet', 'texture-pack'],
     license='MIT',
     install_requires=['Pillow'],
     classifiers=[
