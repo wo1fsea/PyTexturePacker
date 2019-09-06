@@ -155,7 +155,9 @@ class PackerInterface(object):
     def _pack(self, image_rect_list):
         raise NotImplementedError
 
-    def pack(self, input_images, output_name, output_path="", input_base_path=None):
+    def pack(self, input_images, output_name, output_path="", input_base_path=None,
+            save_image_func=Utils.save_image,
+            save_plist_func=Utils.save_plist):
         """
         pack the input images to sheets
         :param input_images: a list of input image paths or a input dir path
@@ -191,8 +193,8 @@ class PackerInterface(object):
             if self.reduce_border_artifacts:
                 packed_image = Utils.alpha_bleeding(packed_image)
 
-            Utils.save_plist(packed_plist, os.path.join(output_path, "%s.plist" % texture_file_name))
-            Utils.save_image(packed_image, os.path.join(output_path, "%s%s" % (texture_file_name, self.texture_format)))
+            save_plist_func(packed_plist, os.path.join(output_path, "%s.plist" % texture_file_name))
+            save_image_func(packed_image, os.path.join(output_path, "%s%s" % (texture_file_name, self.texture_format)))
 
     def multi_pack(self, pack_args_list):
         """
