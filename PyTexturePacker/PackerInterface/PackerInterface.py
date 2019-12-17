@@ -34,7 +34,7 @@ class PackerInterface(object):
 
     def __init__(self, bg_color=0x00000000, texture_format=".png", max_width=4096, max_height=4096, enable_rotated=True,
                  force_square=False, border_padding=2, shape_padding=2, inner_padding=0, trim_mode=0,
-                 reduce_border_artifacts=False):
+                 reduce_border_artifacts=False, extrude=0):
         """
         init a packer
         :param bg_color: background color of output image.
@@ -48,6 +48,7 @@ class PackerInterface(object):
         :param inner_padding: adds transparent pixels to the inside of the sprite, growing it
         :param trim_mode: pixels with an alpha value below this value will be trimmed. when 0, disable
         :param reduce_border_artifacts: adds color to transparent pixels by repeating a sprite's outer color values
+        :param extrude: extrude repeats the sprite's pixels at the border. Sprite's size is not changed.
         """
 
         self.bg_color = bg_color
@@ -59,6 +60,7 @@ class PackerInterface(object):
         self.border_padding = border_padding
         self.shape_padding = shape_padding
         self.inner_padding = inner_padding
+        self.extrude = extrude
         self.trim_mode = trim_mode
         self.reduce_border_artifacts = reduce_border_artifacts
 
@@ -171,6 +173,10 @@ class PackerInterface(object):
         if self.trim_mode:
             for image_rect in image_rects:
                 image_rect.trim(self.trim_mode)
+        
+        if self.extrude:
+            for image_rect in image_rects:
+                image_rect.extrude(self.extrude)
 
         atlas_list = self._pack(image_rects)
 

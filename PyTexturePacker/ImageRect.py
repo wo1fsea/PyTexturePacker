@@ -28,6 +28,7 @@ class ImageRect(Rect):
         self.source_size = (0, 0)
         self.source_box = (0, 0, 0, 0)
 
+        self._extrude_size = 0
         self._rotated = False
         self._trimmed = False
         if image_path:
@@ -41,6 +42,10 @@ class ImageRect(Rect):
     @property
     def trimmed(self):
         return self._trimmed
+
+    @property
+    def extrude_size(self):
+        return self._extrude_size
 
     @property
     def bbox(self):
@@ -84,6 +89,14 @@ class ImageRect(Rect):
             self.width, self.height = self.image.size
 
         self._trimmed = True
+    
+    def extrude(self, size=0):
+        if size <= 0:
+            return
+
+        self._extrude_size = size
+        self.image = Utils.extrude_image(self.image, self._extrude_size)
+        self.width, self.height = self.image.size
 
     def clone(self):
         tmp = ImageRect()
@@ -99,6 +112,7 @@ class ImageRect(Rect):
 
         tmp._rotated = self._rotated
         tmp._trimmed = self._trimmed
+        tmp._extrude_size = self._extrude_size
         return tmp
 
 

@@ -8,6 +8,7 @@ Date:
 Description:
     Utils.py
 ----------------------------------------------------------------------------"""
+from past.builtins import xrange
 
 SUPPORTED_IMAGE_FORMAT = [".png", ".jpg", ".bmp"]
 
@@ -168,3 +169,58 @@ def clean_pixel_alpha_below(image, v=1):
             if pixel[3] < v:
                 pa[x, y] = (0, 0, 0, 0)
     return image
+
+
+def _border(border):
+    if isinstance(border, tuple):
+        if len(border) == 2:
+            left, top = right, bottom = border
+        elif len(border) == 4:
+            left, top, right, bottom = border
+    else:
+        left = top = right = bottom = border
+    return left, top, right, bottom
+
+
+def extrude_image(image, border=0):
+    if border == 0:
+        return image
+
+    from PIL import Image
+    left, top, right, bottom = _border(border)
+    width = left + image.size[0] + right
+    height = top + image.size[1] + bottom
+    out = Image.new(image.mode, (width, height))
+    out.paste(image, (left, top))
+    for x in xrange(width):
+        if 0 <= x < left:
+            ref_x = left
+        elif x >= left + image.size[0]:
+            ref_x = left + image.size[0] - 1
+        else:
+            ref_x = x
+        p = out.getpixel((ref_x, top))
+        for y in xrange(top):
+            out.putpixel((x, y), p)
+
+    for y in xrange(top, top + image.size[1]):
+        p = out.getpixel((left, y))
+        for x in xrange(left):
+            out.putpixel((x, y), p)
+
+    for y in xrange(top, top + image.size[1]):
+        p = out.getpixel((left + image.size[0] - 1, y))
+        for x in xrange(left + image.size[0], width):
+            out.putpixel((x, y), p)
+
+    for x in xrange(width):
+        if 0 <= x < left:
+            ref_x = left
+        elif x >= left + image.size[0]:
+            ref_x = left + image.size[0] - 1
+        else:
+            ref_x = x
+        p = out.getpixel((ref_x, top + image.size[1] - 1))
+        for y in xrange(top + image.size[1], height):
+            out.putpixel((x, y), p)
+    return out
