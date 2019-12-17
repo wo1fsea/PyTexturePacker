@@ -128,6 +128,7 @@ extrude
 Extrude repeats the sprite's pixels at the border. Sprite's size is not changed.
 
 There are two uses for this:
+
 - Reduce flickering in some cases where sprites have to be put next to each other in the final program.
 - Check if sprite outlines are OK. E.g. if you want to use sprites to create tilemaps this allows you to see if there are semi-transparent pixels at the borders of the tiles.
 
