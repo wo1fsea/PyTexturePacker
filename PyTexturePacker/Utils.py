@@ -8,7 +8,9 @@ Date:
 Description:
     Utils.py
 ----------------------------------------------------------------------------"""
-from past.builtins import xrange
+import sys
+if sys.version_info.major > 2:
+    xrange = range
 
 SUPPORTED_IMAGE_FORMAT = [".png", ".jpg", ".bmp"]
 
