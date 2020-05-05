@@ -146,8 +146,8 @@ class MaxRectsAtlas(AtlasInterface):
 
         assert tmp < MAX_RANK
         if tmp < 0 \
-                or main_rect.width - sub_rect.width < 2 * self.inner_padding \
-                or main_rect.height - sub_rect.height < 2 * self.inner_padding:
+                or main_rect.width - sub_rect.width < 2 * self.inner_padding + self.shape_padding \
+                or main_rect.height - sub_rect.height < 2 * self.inner_padding + self.shape_padding:
             return MAX_RANK
         else:
             return tmp

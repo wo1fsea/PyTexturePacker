@@ -82,3 +82,16 @@ class TestImageRect(unittest.TestCase):
         self.assertEqual(self.test_object.height, bbox[3] - bbox[1])
 
         self.assertEqual(self.test_object.trimmed, True)
+
+    def test_extrude(self):
+        test_object = ImageRect.ImageRect("test_image/128.png")
+        pil_image_object = Image.open("test_image/129.png")
+        test_object.extrude(1)
+
+        self.assertEqual(test_object.extrude_size, 1)
+        self.assertEqual(test_object.width, pil_image_object.size[0])
+        self.assertEqual(test_object.height, pil_image_object.size[1])
+
+        for x in range(test_object.image.size[0]):
+            for y in range(test_object.image.size[1]):
+                self.assertSequenceEqual(pil_image_object.getpixel((x, y)), test_object.image.getpixel((x, y)))

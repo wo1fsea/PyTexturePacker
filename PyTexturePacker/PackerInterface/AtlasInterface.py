@@ -43,8 +43,8 @@ class AtlasInterface(object):
 
         frames = {}
         for image_rect in self.image_rect_list:
-            width, height = (image_rect.width, image_rect.height) if not image_rect.rotated \
-                else (image_rect.height, image_rect.width)
+            width, height = (image_rect.width - 2 * image_rect.extrude_size, image_rect.height - 2 * image_rect.extrude_size) \
+                if not image_rect.rotated else (image_rect.height - 2 * image_rect.extrude_size, image_rect.width - 2 * image_rect.extrude_size)
 
             center_offset = (0, 0)
             if image_rect.trimmed:
@@ -58,7 +58,7 @@ class AtlasInterface(object):
                 path = os.path.relpath(os.path.abspath(path), os.path.abspath(input_base_path))
 
             frames[path] = dict(
-                frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, width, height),
+                frame="{{%d,%d},{%d,%d}}" % (image_rect.x + image_rect.extrude_size, image_rect.y + image_rect.extrude_size, width, height),
                 offset="{%d,%d}" % center_offset,
                 rotated=bool(image_rect.rotated),
                 sourceColorRect="{{%d,%d},{%d,%d}}" % (
