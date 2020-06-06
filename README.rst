@@ -3,9 +3,9 @@ PyTexturePacker |pypi-status| |build-status| |docs-status|
 
 PyTexturePacker is an open source python package, released under the MIT License.
 
-**Now! the cpp version is available, visit CppTexturePacker_ for more infomation.**
-
 A subset of feature of TexturePacker_ has been implemented in this package.
+
+**Now! the cpp version is available, visit** CppTexturePacker_ **for more infomation.**
 
 .. _TexturePacker: https://www.codeandweb.com/texturepacker
 .. _CppTexturePacker: https://github.com/wo1fsea/CppTexturePacker
