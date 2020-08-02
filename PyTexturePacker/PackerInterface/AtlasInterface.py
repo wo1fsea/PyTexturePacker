@@ -9,6 +9,8 @@ Description:
     AtlasInterface.py
 ----------------------------------------------------------------------------"""
 
+from ..Utils import ATLAS_FORMAT_PLIST, ATLAS_FORMAT_JSON
+
 MAX_RANK = 2 ** 32
 MAX_WIDTH = 1024 * 16
 MAX_HEIGHT = 1024 * 16
@@ -36,7 +38,7 @@ class AtlasInterface(object):
 
         self.image_rect_list = []
 
-    def dump_plist(self, texture_file_name="", input_base_path=None):
+    def dump_plist(self, texture_file_name="", input_base_path=None, atlas_format=ATLAS_FORMAT_PLIST):
         import os
 
         plist_data = {}
@@ -57,22 +59,43 @@ class AtlasInterface(object):
             else:
                 path = os.path.relpath(os.path.abspath(path), os.path.abspath(input_base_path))
 
-            frames[path] = dict(
-                frame="{{%d,%d},{%d,%d}}" % (image_rect.x + image_rect.extrude_size, image_rect.y + image_rect.extrude_size, width, height),
-                offset="{%d,%d}" % center_offset,
-                rotated=bool(image_rect.rotated),
-                sourceColorRect="{{%d,%d},{%d,%d}}" % (
-                    image_rect.source_box[0], image_rect.source_box[1], width, height),
-                sourceSize="{%d,%d}" % image_rect.source_size,
-            )
+            if atlas_format == ATLAS_FORMAT_PLIST:
+                frames[path] = dict(
+                    frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, width, height),
+                    offset="{%d,%d}" % center_offset,
+                    rotated=bool(image_rect.rotated),
+                    sourceColorRect="{{%d,%d},{%d,%d}}" % (
+                        image_rect.source_box[0], image_rect.source_box[1], width, height),
+                    sourceSize="{%d,%d}" % image_rect.source_size,
+                )
+
+            if atlas_format == ATLAS_FORMAT_JSON:
+                frames[path] = dict(
+                    frame=dict(x=image_rect.x, y=image_rect.y, w=width, h=height),
+                    rotated=bool(image_rect.rotated),
+                    trimed=bool(image_rect.trimmed),
+                    spriteSourceSize=dict(
+                        x=image_rect.source_box[0], y=image_rect.source_box[1],
+                        w=image_rect.source_box[2], h=image_rect.source_box[3]),
+                    sourceSize=dict(w=image_rect.source_size[0], h=image_rect.source_size[1])
+                )
 
         plist_data["frames"] = frames
-        plist_data["metadata"] = dict(
-            format=int(2),
-            textureFileName=texture_file_name,
-            realTextureFileName=texture_file_name,
-            size="{%d,%d}" % self.size,
-        )
+        if atlas_format == ATLAS_FORMAT_PLIST:
+            plist_data["metadata"] = dict(
+                format=int(2),
+                textureFileName=texture_file_name,
+                realTextureFileName=texture_file_name,
+                size="{%d,%d}" % self.size,
+            )
+
+        if atlas_format == ATLAS_FORMAT_JSON:
+            plist_data["meta"] = dict(
+                image=texture_file_name,
+                format="RGBA8888",
+                size=dict(w=self.size[0], h=self.size[1]),
+                scale=1,
+            )
 
         return plist_data
 

@@ -13,6 +13,8 @@ if sys.version_info.major > 2:
     xrange = range
 
 SUPPORTED_IMAGE_FORMAT = [".png", ".jpg", ".bmp"]
+ATLAS_FORMAT_PLIST = "plist"
+ATLAS_FORMAT_JSON = "json"
 
 
 def load_images_from_paths(image_path_list):
@@ -50,6 +52,44 @@ def load_images_from_dir(dir_path):
     return load_images_from_paths(image_rect_path)
 
 
+def get_atlas_data_ext(atlas_format):
+    """
+    get default file extension for selected type of atlas data file
+    :param atlas_format: atlas data file format
+    :return:
+    """
+    if atlas_format == ATLAS_FORMAT_PLIST:
+        return '.plist'
+    if atlas_format == ATLAS_FORMAT_JSON:
+        return '.json'
+
+
+def save_atlas_data(data_dict, file_path, atlas_format):
+    """
+    save a atlas data in selected format. plist or json supported
+    :param data_dict: dict data
+    :param file_path: file path to save
+    :param atlas_format: atlas data file format
+    :return:
+    """
+    if atlas_format == ATLAS_FORMAT_PLIST:
+        return save_plist(data_dict, file_path)
+    if atlas_format == ATLAS_FORMAT_JSON:
+        return save_json(data_dict, file_path)
+
+
+def save_json(data_dict, file_path):
+    """
+    save a dict as a json file
+    :param data_dict: dict data
+    :param file_path: json file path to save
+    :return:
+    """
+    import json
+    with open(file_path, 'w') as fp:
+        json.dump(data_dict, fp)
+
+
 def save_plist(data_dict, file_path):
     """
     save a dict as a plist file
@@ -70,7 +110,7 @@ def save_image(image, file_path):
     """
     save a Image as a file
     :param image: Image
-    :param file_name: file path to save
+    :param file_path: file path to save
     :return:
     """
     image.save(file_path)
