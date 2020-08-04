@@ -34,7 +34,7 @@ class PackerInterface(object):
 
     def __init__(self, bg_color=0x00000000, texture_format=".png", max_width=4096, max_height=4096, enable_rotated=True,
                  force_square=False, border_padding=2, shape_padding=2, inner_padding=0, trim_mode=0,
-                 reduce_border_artifacts=False, extrude=0):
+                 reduce_border_artifacts=False, extrude=0, atlas_format=Utils.ATLAS_FORMAT_PLIST):
         """
         init a packer
         :param bg_color: background color of output image.
@@ -49,6 +49,7 @@ class PackerInterface(object):
         :param trim_mode: pixels with an alpha value below this value will be trimmed. when 0, disable
         :param reduce_border_artifacts: adds color to transparent pixels by repeating a sprite's outer color values
         :param extrude: extrude repeats the sprite's pixels at the border. Sprite's size is not changed.
+        :param atlas_format: texture config output type: 'plist' or 'json'. default: 'plist'
         """
 
         self.bg_color = bg_color
@@ -63,6 +64,7 @@ class PackerInterface(object):
         self.extrude = extrude
         self.trim_mode = trim_mode
         self.reduce_border_artifacts = reduce_border_artifacts
+        self.atlas_format = atlas_format
 
     @staticmethod
     def _calculate_area(image_rect_list, inner_padding):
@@ -185,13 +187,16 @@ class PackerInterface(object):
         for i, atlas in enumerate(atlas_list):
             texture_file_name = output_name if "%d" not in output_name else output_name % i
 
-            packed_plist = atlas.dump_plist("%s%s" % (texture_file_name, self.texture_format), input_base_path)
+            packed_plist = atlas.dump_plist("%s%s" % (texture_file_name, self.texture_format), input_base_path,
+                                            self.atlas_format)
             packed_image = atlas.dump_image(self.bg_color)
 
             if self.reduce_border_artifacts:
                 packed_image = Utils.alpha_bleeding(packed_image)
 
-            Utils.save_plist(packed_plist, os.path.join(output_path, "%s.plist" % texture_file_name))
+            atlas_data_ext = Utils.get_atlas_data_ext(self.atlas_format)
+            Utils.save_atlas_data(packed_plist, os.path.join(output_path, "%s%s" % (texture_file_name, atlas_data_ext)),
+                self.atlas_format)
             Utils.save_image(packed_image, os.path.join(output_path, "%s%s" % (texture_file_name, self.texture_format)))
 
     def multi_pack(self, pack_args_list):
