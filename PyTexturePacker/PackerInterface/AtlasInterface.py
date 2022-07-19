@@ -9,7 +9,7 @@ Description:
     AtlasInterface.py
 ----------------------------------------------------------------------------"""
 
-from ..Utils import ATLAS_FORMAT_PLIST, ATLAS_FORMAT_JSON
+from ..Utils import ATLAS_FORMAT_PLIST, ATLAS_FORMAT_JSON,ATLAS_FORMAT_UNREAL_PAPER2D
 
 MAX_RANK = 2 ** 32
 MAX_WIDTH = 1024 * 16
@@ -80,6 +80,17 @@ class AtlasInterface(object):
                     sourceSize=dict(w=image_rect.source_size[0], h=image_rect.source_size[1])
                 )
 
+            if atlas_format == ATLAS_FORMAT_UNREAL_PAPER2D:
+                frames[path] = dict(
+                    frame=dict(x=image_rect.x, y=image_rect.y, w=width, h=height),
+                    rotated=bool(image_rect.rotated),
+                    trimed=bool(image_rect.trimmed),
+                    spriteSourceSize=dict(
+                        x=image_rect.source_box[0], y=image_rect.source_box[1],
+                        w=image_rect.source_box[2], h=image_rect.source_box[3]),
+                    sourceSize=dict(w=image_rect.source_size[0], h=image_rect.source_size[1])
+                )
+
         plist_data["frames"] = frames
         if atlas_format == ATLAS_FORMAT_PLIST:
             plist_data["metadata"] = dict(
@@ -96,6 +107,16 @@ class AtlasInterface(object):
                 size=dict(w=self.size[0], h=self.size[1]),
                 scale=1,
             )
+        if atlas_format == ATLAS_FORMAT_UNREAL_PAPER2D:
+            plist_data["meta"] = dict(
+                app="https://www.codeandweb.com/texturepacker",
+                target="paper2d",
+                image=texture_file_name,
+                format="RGBA8888",
+                size=dict(w=self.size[0], h=self.size[1]),
+                scale=1,
+            )
+
 
         return plist_data
 

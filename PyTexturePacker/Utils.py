@@ -12,9 +12,10 @@ import sys
 if sys.version_info.major > 2:
     xrange = range
 
-SUPPORTED_IMAGE_FORMAT = [".png", ".jpg", ".bmp"]
+SUPPORTED_IMAGE_FORMAT = [".png", ".jpg", ".bmp", '.tga']
 ATLAS_FORMAT_PLIST = "plist"
 ATLAS_FORMAT_JSON = "json"
+ATLAS_FORMAT_UNREAL_PAPER2D = "unreal_paper2d"
 
 
 def load_images_from_paths(image_path_list):
@@ -62,6 +63,8 @@ def get_atlas_data_ext(atlas_format):
         return '.plist'
     if atlas_format == ATLAS_FORMAT_JSON:
         return '.json'
+    if atlas_format == ATLAS_FORMAT_UNREAL_PAPER2D:
+        return ".paper2dsprites"
 
 
 def save_atlas_data(data_dict, file_path, atlas_format):
@@ -76,11 +79,25 @@ def save_atlas_data(data_dict, file_path, atlas_format):
         return save_plist(data_dict, file_path)
     if atlas_format == ATLAS_FORMAT_JSON:
         return save_json(data_dict, file_path)
+    if atlas_format == ATLAS_FORMAT_UNREAL_PAPER2D:
+        return save_unreal_paper2d(data_dict, file_path)
 
 
 def save_json(data_dict, file_path):
     """
     save a dict as a json file
+    :param data_dict: dict data
+    :param file_path: json file path to save
+    :return:
+    """
+    import json
+    with open(file_path, 'w') as fp:
+        json.dump(data_dict, fp)
+
+
+def save_unreal_paper2d(data_dict, file_path):
+    """
+    save a dict as a unreal json file
     :param data_dict: dict data
     :param file_path: json file path to save
     :return:
