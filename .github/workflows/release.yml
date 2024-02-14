@@ -1,8 +1,11 @@
 name: Publish to PyPI
 
 on:
-  release:
-    types: [created]
+  push:
+    branches: [ "release" ]
+  pull_request:
+    branches: [ "release" ]
+
 
 jobs:
   pypi-publish:
