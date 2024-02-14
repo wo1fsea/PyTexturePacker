@@ -50,7 +50,8 @@ class GuillotineAtlas(MaxRectsAtlas):
     def place_image_rect(self, rect_index, image_rect):
         rect = self.max_rect_list[rect_index]
 
-        image_rect.x, image_rect.y = rect.x + self.inner_padding, rect.y + self.inner_padding
+        image_rect.x, image_rect.y = rect.x + \
+            self.inner_padding, rect.y + self.inner_padding
 
         fake_image_rect = image_rect.clone()
         fake_image_rect.left -= self.inner_padding
@@ -61,6 +62,3 @@ class GuillotineAtlas(MaxRectsAtlas):
         self.max_rect_list.pop(rect_index)
         self.max_rect_list.extend(self.cut(rect, fake_image_rect))
         self.image_rect_list.append(image_rect)
-
-
-

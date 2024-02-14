@@ -51,7 +51,7 @@ Here comes an example of using PyTexturePacker to pack texture images from a dir
         # create a MaxRectsBinPacker
         packer = Packer.create(max_width=2048, max_height=2048, bg_color=0xffffff00)
         # pack texture images under directory "test_case/" and name the output images as "test_case".
-        # "%d" in output file name "test_case%d" is a placeholder, which is a multipack index, starting with 0.
+        # "%d" in output file name "test_case%d" is a placeholder, which is the atlas index, starting with 0.
         packer.pack("test_case/", "test_case%d")
 
 
@@ -172,9 +172,8 @@ The project is released under the terms of MIT License. You may find the content
 .. _here: http://opensource.org/licenses/MIT
 
 
-
-.. |build-status| image:: https://travis-ci.org/wo1fsea/PyTexturePacker.svg?branch=master
-    :target: https://travis-ci.org/wo1fsea/PyTexturePacker
+.. |build-status| image:: https://github.com/wo1fsea/PyTexturePacker/actions/workflows/test.yml/badge.svg?branch=master
+    :target: https://github.com/wo1fsea/PyTexturePacker/actions/workflows/test.yml
     :alt: Build status
 .. |docs-status| image:: https://readthedocs.org/projects/pytexturepacker/badge/?version=master
     :target: http://pytexturepacker.readthedocs.io/

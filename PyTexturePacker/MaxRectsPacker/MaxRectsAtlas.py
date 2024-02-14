@@ -39,9 +39,9 @@ class MaxRectsAtlas(AtlasInterface):
 
         width, height = self.size
         self.max_rect_list = [Rect(0 + self.border_padding,
-            0 + self.border_padding,
-            width - 2 * self.border_padding,
-            height - 2 * self.border_padding)]
+                                   0 + self.border_padding,
+                                   width - 2 * self.border_padding,
+                                   height - 2 * self.border_padding)]
 
     def _is_in_max_size(self, size):
         return size[0] <= self.max_size[0] and size[1] <= self.max_size[1]
@@ -83,19 +83,20 @@ class MaxRectsAtlas(AtlasInterface):
 
         if old_size[0] != self.size[0]:
             new_rect = Rect(old_size[0] - self.border_padding,
-                0 + self.border_padding,
-                self.size[0] - old_size[0],
-                self.size[1] - 2 * self.border_padding)
+                            0 + self.border_padding,
+                            self.size[0] - old_size[0],
+                            self.size[1] - 2 * self.border_padding)
             self.max_rect_list.append(new_rect)
 
         if old_size[1] != self.size[1]:
             new_rect = Rect(0 + self.border_padding,
-                old_size[1] - self.border_padding,
-                self.size[0] - 2 * self.border_padding,
-                self.size[1] - old_size[1])
+                            old_size[1] - self.border_padding,
+                            self.size[0] - 2 * self.border_padding,
+                            self.size[1] - old_size[1])
             self.max_rect_list.append(new_rect)
 
-        self.max_rect_list = list(filter(self._max_rect_list_pruning, self.max_rect_list))
+        self.max_rect_list = list(
+            filter(self._max_rect_list_pruning, self.max_rect_list))
 
         return True
 
@@ -183,7 +184,8 @@ class MaxRectsAtlas(AtlasInterface):
     def place_image_rect(self, rect_index, image_rect):
         rect = self.max_rect_list[rect_index]
 
-        image_rect.x, image_rect.y = rect.x + self.inner_padding, rect.y + self.inner_padding
+        image_rect.x, image_rect.y = rect.x + \
+            self.inner_padding, rect.y + self.inner_padding
 
         fake_image_rect = image_rect.clone()
         fake_image_rect.left -= self.inner_padding
@@ -200,7 +202,8 @@ class MaxRectsAtlas(AtlasInterface):
                 _max_rect_list.append(rect)
 
         self.max_rect_list = _new_max_rect_list
-        self.max_rect_list = list(filter(self._max_rect_list_pruning, _new_max_rect_list))
+        self.max_rect_list = list(
+            filter(self._max_rect_list_pruning, _new_max_rect_list))
         self.max_rect_list.extend(_max_rect_list)
 
         self.image_rect_list.append(image_rect)

@@ -30,7 +30,8 @@ class MaxRectsPacker(PackerInterface):
     def _pack(self, image_rect_list):
         atlas_list = self._init_atlas_list(image_rect_list)
 
-        image_rect_list = sorted(image_rect_list, key=lambda x: max(x.width, x.height), reverse=True)
+        image_rect_list = sorted(image_rect_list, key=lambda x: max(
+            x.width, x.height), reverse=True)
 
         for image_rect in image_rect_list:
             best_atlas = -1
@@ -39,7 +40,8 @@ class MaxRectsPacker(PackerInterface):
             best_rotated = False
 
             for i, max_rect in enumerate(atlas_list):
-                index, rank, rotated = max_rect.find_best_rank(image_rect, self.enable_rotated)
+                index, rank, rotated = max_rect.find_best_rank(
+                    image_rect, self.enable_rotated)
 
                 if rank < best_rank:
                     best_atlas = i

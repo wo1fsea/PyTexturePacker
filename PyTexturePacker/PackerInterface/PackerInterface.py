@@ -72,9 +72,9 @@ class PackerInterface(object):
         area = 0
         for image_rect in image_rect_list:
             area += image_rect.area + \
-                    image_rect.width * inner_padding + \
-                    image_rect.height * inner_padding + \
-                    inner_padding ** 2
+                image_rect.width * inner_padding + \
+                image_rect.height * inner_padding + \
+                inner_padding ** 2
         return area
 
     @staticmethod
@@ -131,7 +131,7 @@ class PackerInterface(object):
 
         if self.enable_rotated:
             if min(min_width, min_height) > min(self.max_width, self.max_height) or \
-                            max(min_width, min_height) > max(self.max_width, self.max_height):
+                    max(min_width, min_height) > max(self.max_width, self.max_height):
                 raise ValueError("size of image is larger than max size.")
         else:
             if min_height > self.max_height or min_width > self.max_width:
@@ -139,7 +139,8 @@ class PackerInterface(object):
 
         atlas_list = []
         area = self._calculate_area(image_rect_list, self.inner_padding)
-        w, h = self._cal_init_size(area, min_width, min_height, self.max_width, self.max_height)
+        w, h = self._cal_init_size(
+            area, min_width, min_height, self.max_width, self.max_height)
 
         atlas_list.append(self.ATLAS_TYPE(w, h, self.max_width, self.max_height,
                                           force_square=self.force_square, border_padding=self.border_padding,
@@ -147,7 +148,8 @@ class PackerInterface(object):
 
         area = area - w * h
         while area > 0:
-            w, h = self._cal_init_size(area, 0, 0, self.max_width, self.max_height)
+            w, h = self._cal_init_size(
+                area, 0, 0, self.max_width, self.max_height)
             area = area - w * h
             atlas_list.append(self.ATLAS_TYPE(w, h, self.max_width, self.max_height,
                                               force_square=self.force_square, border_padding=self.border_padding,
@@ -176,14 +178,15 @@ class PackerInterface(object):
         if self.trim_mode:
             for image_rect in image_rects:
                 image_rect.trim(self.trim_mode)
-        
+
         if self.extrude:
             for image_rect in image_rects:
                 image_rect.extrude(self.extrude)
 
         atlas_list = self._pack(image_rects)
 
-        assert "%d" in output_name or len(atlas_list) == 1, 'more than one output image, but no "%d" in output_name'
+        assert "%d" in output_name or len(
+            atlas_list) == 1, 'more than one output image, but no "%d" in output_name'
 
         for i, atlas in enumerate(atlas_list):
             texture_file_name = output_name if "%d" not in output_name else output_name % i
@@ -195,10 +198,12 @@ class PackerInterface(object):
             if self.reduce_border_artifacts:
                 packed_image = Utils.alpha_bleeding(packed_image)
 
-            atlas_data_ext = self.atlas_ext or Utils.get_atlas_data_ext(self.atlas_format)
-            Utils.save_atlas_data(packed_plist, os.path.join(output_path, "%s%s" % (texture_file_name, atlas_data_ext)),
+            atlas_data_ext = self.atlas_ext or Utils.get_atlas_data_ext(
                 self.atlas_format)
-            Utils.save_image(packed_image, os.path.join(output_path, "%s%s" % (texture_file_name, self.texture_format)))
+            Utils.save_atlas_data(packed_plist, os.path.join(output_path, "%s%s" % (texture_file_name, atlas_data_ext)),
+                                  self.atlas_format)
+            Utils.save_image(packed_image, os.path.join(
+                output_path, "%s%s" % (texture_file_name, self.texture_format)))
 
     def multi_pack(self, pack_args_list):
         """
@@ -212,6 +217,7 @@ class PackerInterface(object):
         pool_size = multiprocessing.cpu_count() * 2
         pool = multiprocessing.Pool(processes=pool_size)
 
-        pool.map(multi_pack_handler, zip([self] * len(pack_args_list), pack_args_list))
+        pool.map(multi_pack_handler, zip(
+            [self] * len(pack_args_list), pack_args_list))
         pool.close()
         pool.join()

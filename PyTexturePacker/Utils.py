@@ -8,6 +8,7 @@ Date:
 Description:
     Utils.py
 ----------------------------------------------------------------------------"""
+
 import sys
 import inspect
 if sys.version_info.major > 2:
@@ -68,9 +69,10 @@ def get_atlas_data_ext(atlas_format):
         return '.csv'
     elif callable(atlas_format):
         parameters = inspect.signature(atlas_format).parameters
-        required_args = sum(1 for param in parameters.values() if param.default is param.empty)
+        required_args = sum(1 for param in parameters.values()
+                            if param.default is param.empty)
         if len(parameters) >= 2 and required_args <= 2:
-          return '.txt'
+            return '.txt'
 
     raise ValueError(f"Unsupported file format: {atlas_format}")
 
@@ -91,9 +93,10 @@ def save_atlas_data(data_dict, file_path, atlas_format):
         return save_csv(data_dict, file_path)
     elif callable(atlas_format):
         parameters = inspect.signature(atlas_format).parameters
-        required_args = sum(1 for param in parameters.values() if param.default is param.empty)
+        required_args = sum(1 for param in parameters.values()
+                            if param.default is param.empty)
         if len(parameters) >= 2 and required_args <= 2:
-          return atlas_format(data_dict, file_path)
+            return atlas_format(data_dict, file_path)
 
     raise ValueError(f"Unsupported file format: {atlas_format}")
 
@@ -106,12 +109,12 @@ def save_csv(data_dict, file_path):
     :return:
     """
     with open(file_path, 'w') as fp:
-      for name, data in data_dict['frames'].items():
-        frame = data['frame']
-        source = data['spriteSourceSize']
-        fp.write(f'{name},{frame["x"]},{frame["y"]},{frame["w"]},{frame["h"]},'
-                 f'{source["x"]},{source["y"]},{source["w"]},{source["h"]},'
-                 f'{data["rotated"]},{data["trimed"]}\n')
+        for name, data in data_dict['frames'].items():
+            frame = data['frame']
+            source = data['spriteSourceSize']
+            fp.write(f'{name},{frame["x"]},{frame["y"]},{frame["w"]},{frame["h"]},'
+                     f'{source["x"]},{source["y"]},{source["w"]},{source["h"]},'
+                     f'{data["rotated"]},{data["trimed"]}\n')
 
 
 def save_json(data_dict, file_path):

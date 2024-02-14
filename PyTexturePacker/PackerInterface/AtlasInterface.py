@@ -9,7 +9,7 @@ Description:
     AtlasInterface.py
 ----------------------------------------------------------------------------"""
 
-from ..Utils import ATLAS_FORMAT_PLIST#, ATLAS_FORMAT_JSON
+from ..Utils import ATLAS_FORMAT_PLIST  # , ATLAS_FORMAT_JSON
 
 MAX_RANK = 2 ** 32
 MAX_WIDTH = 1024 * 16
@@ -57,11 +57,13 @@ class AtlasInterface(object):
             if input_base_path is None:
                 _, path = os.path.split(path)
             else:
-                path = os.path.relpath(os.path.abspath(path), os.path.abspath(input_base_path))
+                path = os.path.relpath(os.path.abspath(
+                    path), os.path.abspath(input_base_path))
 
             if atlas_format == ATLAS_FORMAT_PLIST:
                 frames[path] = dict(
-                    frame="{{%d,%d},{%d,%d}}" % (image_rect.x, image_rect.y, width, height),
+                    frame="{{%d,%d},{%d,%d}}" % (
+                        image_rect.x, image_rect.y, width, height),
                     offset="{%d,%d}" % center_offset,
                     rotated=bool(image_rect.rotated),
                     sourceColorRect="{{%d,%d},{%d,%d}}" % (
@@ -70,13 +72,15 @@ class AtlasInterface(object):
                 )
             else:
                 frames[path] = dict(
-                    frame=dict(x=image_rect.x, y=image_rect.y, w=width, h=height),
+                    frame=dict(x=image_rect.x, y=image_rect.y,
+                               w=width, h=height),
                     rotated=bool(image_rect.rotated),
                     trimed=bool(image_rect.trimmed),
                     spriteSourceSize=dict(
                         x=image_rect.source_box[0], y=image_rect.source_box[1],
                         w=image_rect.source_box[2], h=image_rect.source_box[3]),
-                    sourceSize=dict(w=image_rect.source_size[0], h=image_rect.source_size[1])
+                    sourceSize=dict(
+                        w=image_rect.source_size[0], h=image_rect.source_size[1])
                 )
 
         plist_data["frames"] = frames
@@ -105,6 +109,7 @@ class AtlasInterface(object):
             image = image_rect.image.crop()
             if image_rect.rotated:
                 image = image.transpose(Image.ROTATE_270)
-            packed_image.paste(image, (image_rect.left, image_rect.top, image_rect.right, image_rect.bottom))
+            packed_image.paste(
+                image, (image_rect.left, image_rect.top, image_rect.right, image_rect.bottom))
 
         return packed_image
