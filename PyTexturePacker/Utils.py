@@ -74,7 +74,7 @@ def get_atlas_data_ext(atlas_format):
         if len(parameters) >= 2 and required_args <= 2:
             return '.txt'
 
-    raise ValueError(f"Unsupported file format: {atlas_format}")
+    raise ValueError("Unsupported file format: %s" % atlas_format)
 
 
 def save_atlas_data(data_dict, file_path, atlas_format):
@@ -98,7 +98,7 @@ def save_atlas_data(data_dict, file_path, atlas_format):
         if len(parameters) >= 2 and required_args <= 2:
             return atlas_format(data_dict, file_path)
 
-    raise ValueError(f"Unsupported file format: {atlas_format}")
+    raise ValueError("Unsupported file format: %s" % atlas_format)
 
 
 def save_csv(data_dict, file_path):
@@ -112,9 +112,13 @@ def save_csv(data_dict, file_path):
         for name, data in data_dict['frames'].items():
             frame = data['frame']
             source = data['spriteSourceSize']
-            fp.write(f'{name},{frame["x"]},{frame["y"]},{frame["w"]},{frame["h"]},'
-                     f'{source["x"]},{source["y"]},{source["w"]},{source["h"]},'
-                     f'{data["rotated"]},{data["trimed"]}\n')
+
+            # fp.write(f'{name},{frame["x"]},{frame["y"]},{frame["w"]},{frame["h"]},'
+            #          f'{source["x"]},{source["y"]},{source["w"]},{source["h"]},'
+            #          f'{data["rotated"]},{data["trimed"]}\n')
+            fp.write('%s,%d,%d,%d,%d,%d,%d,%d,%d,%s,%s\n' % (name, frame["x"], frame["y"], frame["w"], frame["h"],
+                                                             source["x"], source["y"], source["w"], source["h"],
+                                                             data["rotated"], data["trimed"]))
 
 
 def save_json(data_dict, file_path):
