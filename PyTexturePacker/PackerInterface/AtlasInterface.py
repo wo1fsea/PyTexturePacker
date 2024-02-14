@@ -9,7 +9,7 @@ Description:
     AtlasInterface.py
 ----------------------------------------------------------------------------"""
 
-from ..Utils import ATLAS_FORMAT_PLIST, ATLAS_FORMAT_JSON
+from ..Utils import ATLAS_FORMAT_PLIST#, ATLAS_FORMAT_JSON
 
 MAX_RANK = 2 ** 32
 MAX_WIDTH = 1024 * 16
@@ -68,8 +68,7 @@ class AtlasInterface(object):
                         image_rect.source_box[0], image_rect.source_box[1], width, height),
                     sourceSize="{%d,%d}" % image_rect.source_size,
                 )
-
-            if atlas_format == ATLAS_FORMAT_JSON:
+            else:
                 frames[path] = dict(
                     frame=dict(x=image_rect.x, y=image_rect.y, w=width, h=height),
                     rotated=bool(image_rect.rotated),
@@ -88,8 +87,7 @@ class AtlasInterface(object):
                 realTextureFileName=texture_file_name,
                 size="{%d,%d}" % self.size,
             )
-
-        if atlas_format == ATLAS_FORMAT_JSON:
+        else:
             plist_data["meta"] = dict(
                 image=texture_file_name,
                 format="RGBA8888",

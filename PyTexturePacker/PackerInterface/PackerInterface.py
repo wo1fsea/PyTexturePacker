@@ -34,7 +34,7 @@ class PackerInterface(object):
 
     def __init__(self, bg_color=0x00000000, texture_format=".png", max_width=4096, max_height=4096, enable_rotated=True,
                  force_square=False, border_padding=2, shape_padding=2, inner_padding=0, trim_mode=0,
-                 reduce_border_artifacts=False, extrude=0, atlas_format=Utils.ATLAS_FORMAT_PLIST):
+                 reduce_border_artifacts=False, extrude=0, atlas_format=Utils.ATLAS_FORMAT_PLIST, atlas_ext=None):
         """
         init a packer
         :param bg_color: background color of output image.
@@ -65,6 +65,7 @@ class PackerInterface(object):
         self.trim_mode = trim_mode
         self.reduce_border_artifacts = reduce_border_artifacts
         self.atlas_format = atlas_format
+        self.atlas_ext = atlas_ext
 
     @staticmethod
     def _calculate_area(image_rect_list, inner_padding):
@@ -194,7 +195,7 @@ class PackerInterface(object):
             if self.reduce_border_artifacts:
                 packed_image = Utils.alpha_bleeding(packed_image)
 
-            atlas_data_ext = Utils.get_atlas_data_ext(self.atlas_format)
+            atlas_data_ext = self.atlas_ext or Utils.get_atlas_data_ext(self.atlas_format)
             Utils.save_atlas_data(packed_plist, os.path.join(output_path, "%s%s" % (texture_file_name, atlas_data_ext)),
                 self.atlas_format)
             Utils.save_image(packed_image, os.path.join(output_path, "%s%s" % (texture_file_name, self.texture_format)))

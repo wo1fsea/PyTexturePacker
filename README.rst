@@ -128,6 +128,7 @@ These color values can reduce artifacts around sprites and removes dark halos at
 
 extrude
 -------
+
 Extrude repeats the sprite's pixels at the border. Sprite's size is not changed.
 
 There are two uses for this:
@@ -137,8 +138,15 @@ There are two uses for this:
 
 atlas_format
 -------
-Choose the texture config format that file will use. Available options "plist" or "json".
+
+Choose the texture config format that file will use. Available options "plist", "json" and "csv". Aditionally, you can use a custom function that will receive a dictionary and a path and handle the format in some custom way.
 The default texture config output format is "plist".
+
+atlas_ext
+-------
+
+Forces the atlas to use this extension regardless of the format.
+If not provided, the atlas will use the default extension for the chosen format.
 
 Contribute
 ==========
