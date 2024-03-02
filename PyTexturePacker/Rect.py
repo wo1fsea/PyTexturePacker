@@ -9,6 +9,7 @@ Description:
     Rect.py
 ----------------------------------------------------------------------------"""
 
+
 class Rect(object):
     """
     rect type data
