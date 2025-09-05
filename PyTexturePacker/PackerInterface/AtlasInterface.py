@@ -59,6 +59,7 @@ class AtlasInterface(object):
             else:
                 path = os.path.relpath(os.path.abspath(
                     path), os.path.abspath(input_base_path))
+                path = path.replace('\\', '/') # for windows path
                 
             if trim_sprite_names:
                 path, _ = os.path.splitext(path)
