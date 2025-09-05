@@ -154,7 +154,7 @@ class MaxRectsAtlas(AtlasInterface):
             return tmp
 
     def find_best_rank(self, image_rect, enable_rotated=False):
-        if enable_rotated:
+        if enable_rotated and image_rect.width != image_rect.height:
             return self.find_best_rank_with_rotate(image_rect)
         else:
             return self.find_best_rank_without_rotate(image_rect)
