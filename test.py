@@ -23,9 +23,9 @@ def load_test_suite():
     test_path = os.path.abspath(TEST_MODULE)
     files = os.listdir(test_path)
 
-    test_file_re = re.compile(TEST_CASE_NAME, re.IGNORECASE)
-    files = filter(test_file_re.match, files)
-
+    # test_file_re = re.compile(TEST_CASE_NAME, re.IGNORECASE)
+    # files = filter(test_file_re.match, files)
+    files = [f for f in files if re.match(TEST_CASE_NAME, f, re.IGNORECASE)]
     module_names = map(lambda f: os.path.splitext(f)[0], files)
     modules = map(lambda x: __import__("%s.%s" % (TEST_MODULE, x), fromlist=[TEST_MODULE]), module_names)
 

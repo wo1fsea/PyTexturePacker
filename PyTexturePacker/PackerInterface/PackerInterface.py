@@ -34,7 +34,7 @@ class PackerInterface(object):
 
     def __init__(self, bg_color=0x00000000, texture_format=".png", max_width=4096, max_height=4096, enable_rotated=True,
                  force_square=False, border_padding=2, shape_padding=2, inner_padding=0, trim_mode=0,
-                 reduce_border_artifacts=False, extrude=0, atlas_format=Utils.ATLAS_FORMAT_PLIST, atlas_ext=None):
+                 reduce_border_artifacts=False, extrude=0, atlas_format=Utils.ATLAS_FORMAT_PLIST, atlas_ext=None, trim_sprite_names=False):
         """
         init a packer
         :param bg_color: background color of output image.
@@ -66,6 +66,7 @@ class PackerInterface(object):
         self.reduce_border_artifacts = reduce_border_artifacts
         self.atlas_format = atlas_format
         self.atlas_ext = atlas_ext
+        self.trim_sprite_names = trim_sprite_names
 
     @staticmethod
     def _calculate_area(image_rect_list, inner_padding):
@@ -192,7 +193,7 @@ class PackerInterface(object):
             texture_file_name = output_name if "%d" not in output_name else output_name % i
 
             packed_plist = atlas.dump_plist("%s%s" % (texture_file_name, self.texture_format), input_base_path,
-                                            self.atlas_format)
+                                            self.atlas_format, trim_sprite_names = self.trim_sprite_names)
             packed_image = atlas.dump_image(self.bg_color)
 
             if self.reduce_border_artifacts:

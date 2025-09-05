@@ -96,3 +96,8 @@ atlas_ext
 
 Forces the atlas to use this extension regardless of the format.
 If not provided, the atlas will use the default extension for the chosen format.
+
+trim_sprite_names
+-----------------
+
+Removes the file extension from the sprite names in the atlas.
