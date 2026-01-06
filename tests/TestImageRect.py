@@ -49,6 +49,10 @@ class TestImageRect(unittest.TestCase):
         clone_object = self.test_object.clone()
         self.check_equal(clone_object)
 
+    def test_eq(self):
+        clone_object = self.test_object.clone()
+        self.assertEqual(self.test_object, clone_object)
+
     def test_properties(self):
         self.test_object = ImageRect.ImageRect(TEST_IMAGE_PATH)
 

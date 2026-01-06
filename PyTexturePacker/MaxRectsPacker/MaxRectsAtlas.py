@@ -187,6 +187,9 @@ class MaxRectsAtlas(AtlasInterface):
         image_rect.x, image_rect.y = rect.x + \
             self.inner_padding, rect.y + self.inner_padding
 
+        image_rect.x = max(image_rect.x, self.border_padding + self.inner_padding)
+        image_rect.y = max(image_rect.y, self.border_padding + self.inner_padding)
+
         fake_image_rect = image_rect.clone()
         fake_image_rect.left -= self.inner_padding
         fake_image_rect.right += self.inner_padding + self.shape_padding
