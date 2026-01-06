@@ -21,9 +21,9 @@ def multi_pack_handler(args):
     packer, args = args
 
     if isinstance(args, (list, tuple)):
-        packer.pack(*args)
+        return packer.pack(*args)
     elif isinstance(args, dict):
-        packer.pack(**args)
+        return packer.pack(**args)
 
 
 class PackerInterface(object):
@@ -34,7 +34,9 @@ class PackerInterface(object):
 
     def __init__(self, bg_color=0x00000000, texture_format=".png", max_width=4096, max_height=4096, enable_rotated=True,
                  force_square=False, border_padding=2, shape_padding=2, inner_padding=0, trim_mode=0,
-                 reduce_border_artifacts=False, extrude=0, atlas_format=Utils.ATLAS_FORMAT_PLIST, atlas_ext=None):
+                 reduce_border_artifacts=False, extrude=0, atlas_format=Utils.ATLAS_FORMAT_PLIST,
+                 atlas_ext=None, detect_duplicates=False, ignore_blank=False, draw_border=False, scale=None,
+                 scale_filter='BICUBIC', crop_atlas=False):
         """
         init a packer
         :param bg_color: background color of output image.
@@ -50,6 +52,13 @@ class PackerInterface(object):
         :param reduce_border_artifacts: adds color to transparent pixels by repeating a sprite's outer color values
         :param extrude: extrude repeats the sprite's pixels at the border. Sprite's size is not changed.
         :param atlas_format: texture config output type: 'plist' or 'json'. default: 'plist'
+        :param detect_duplicates: detect and remove duplicate sprites
+        :param ignore_blank: blank images (completely transparent) will not be added to the texture
+        :param draw_border: draw border around sprites for debugging purposes
+        :param scale: scale factor to apply to input images before packing
+        :param scale_filter: scaling algorithm to use when scaling input images
+        :param crop_atlas: crop resulting texture atlas to the actual content size
+
         """
 
         self.bg_color = bg_color
@@ -66,6 +75,26 @@ class PackerInterface(object):
         self.reduce_border_artifacts = reduce_border_artifacts
         self.atlas_format = atlas_format
         self.atlas_ext = atlas_ext
+        self.detect_duplicates = detect_duplicates
+        self.ignore_blank = ignore_blank
+        self.draw_border = draw_border
+        self.scale = scale
+        if self.scale:
+            self.scale_filter = self._get_scale_filter(scale_filter)
+        self.crop_atlas = crop_atlas
+
+    @staticmethod
+    def _get_scale_filter(scale_filter):
+        from PIL import Image
+
+        FILTERS = { 'NEAREST': Image.NEAREST, 'BOX': Image.BOX, 'BILINEAR': Image.BILINEAR,
+            'HAMMING': Image.HAMMING, 'BICUBIC': Image.BICUBIC, 'LANCZOS': Image.LANCZOS }
+
+        filter = FILTERS.get(scale_filter, None)
+        if not filter:
+            raise ValueError(f'Unknown scale filter: {scale_filter}')
+
+        return filter
 
     @staticmethod
     def _calculate_area(image_rect_list, inner_padding):
@@ -118,6 +147,41 @@ class PackerInterface(object):
         else:
             return tuple((short, long))
 
+    @staticmethod
+    def _detect_duplicates(image_rect_list):
+        from collections import defaultdict
+
+        previous_instances = defaultdict(list)
+        aliases = defaultdict(list)
+
+        def _is_unique(image_rect):
+            instances = previous_instances[image_rect.hash]
+            try:
+                original = next(instance for instance in instances)
+                aliases[id(original)].append(image_rect.image_path)
+                return False
+            except StopIteration:
+                instances.append(image_rect)
+                return True
+
+        image_rect_list = list(filter(_is_unique, image_rect_list))
+        return image_rect_list, aliases
+
+    @staticmethod
+    def _rescale_images(image_rects, scale, scale_filter):
+        for image_rect in image_rects:
+            image_rect.scale(scale, scale_filter)
+
+    def _remove_blank(self, image_rect_list):
+        def _is_non_empty_image(image_rect):
+            image = image_rect.image
+            colors = image.getcolors(1)
+            if not colors:
+                return True
+            return colors[0][1] != self.bg_color and (image.mode != 'RGBA' or colors[0][1][3])
+
+        return list(filter(_is_non_empty_image, image_rect_list))
+
     def _init_atlas_list(self, image_rect_list):
         min_width, min_height = 0, 0
         for image_rect in image_rect_list:
@@ -144,7 +208,8 @@ class PackerInterface(object):
 
         atlas_list.append(self.ATLAS_TYPE(w, h, self.max_width, self.max_height,
                                           force_square=self.force_square, border_padding=self.border_padding,
-                                          shape_padding=self.shape_padding, inner_padding=self.inner_padding))
+                                          shape_padding=self.shape_padding, inner_padding=self.inner_padding,
+                                          crop_to_content=self.crop_atlas))
 
         area = area - w * h
         while area > 0:
@@ -153,27 +218,40 @@ class PackerInterface(object):
             area = area - w * h
             atlas_list.append(self.ATLAS_TYPE(w, h, self.max_width, self.max_height,
                                               force_square=self.force_square, border_padding=self.border_padding,
-                                              shape_padding=self.shape_padding, inner_padding=self.inner_padding))
+                                              shape_padding=self.shape_padding, inner_padding=self.inner_padding,
+                                              crop_to_content=self.crop_atlas))
 
         return atlas_list
 
     def _pack(self, image_rect_list):
         raise NotImplementedError
 
-    def pack(self, input_images, output_name, output_path="", input_base_path=None):
+    def pack(self, input_images, output_name, output_path="", input_base_path=None, post_process_routine=None, save_atlas_data=True):
         """
         pack the input images to sheets
         :param input_images: a list of input image paths or a input dir path
         :param output_name: the output file name
         :param output_path: the output file path
         :param input_base_path: the base path of input files
-        :return:
+        :param post_process_routine: routine to post-process atlas image(s), input: image, atlas data, output: new image
+        :param save_atlas_data: save atlas data to disk if true
+        :return: list of atlas data
         """
 
         if isinstance(input_images, (tuple, list)):
             image_rects = Utils.load_images_from_paths(input_images)
         else:
             image_rects = Utils.load_images_from_dir(input_images)
+
+        if self.ignore_blank:
+            image_rects = self._remove_blank(image_rects)
+
+        aliases = {}
+        if self.detect_duplicates:
+            image_rects, aliases = self._detect_duplicates(image_rects)
+
+        if self.scale:
+            self._rescale_images(image_rects, self.scale, self.scale_filter)
 
         if self.trim_mode:
             for image_rect in image_rects:
@@ -188,22 +266,32 @@ class PackerInterface(object):
         assert "%d" in output_name or len(
             atlas_list) == 1, 'more than one output image, but no "%d" in output_name'
 
+        atlas_data = []
+
         for i, atlas in enumerate(atlas_list):
             texture_file_name = output_name if "%d" not in output_name else output_name % i
 
-            packed_plist = atlas.dump_plist("%s%s" % (texture_file_name, self.texture_format), input_base_path,
-                                            self.atlas_format)
-            packed_image = atlas.dump_image(self.bg_color)
+            packed_plist = atlas.dump_plist(aliases, "%s%s" % (texture_file_name, self.texture_format),
+                                            input_base_path, self.atlas_format)
+            packed_image = atlas.dump_image(self.bg_color, self.draw_border)
 
             if self.reduce_border_artifacts:
                 packed_image = Utils.alpha_bleeding(packed_image)
 
+            if post_process_routine:
+                packed_image = post_process_routine(packed_image, packed_plist)
+
             atlas_data_ext = self.atlas_ext or Utils.get_atlas_data_ext(
                 self.atlas_format)
-            Utils.save_atlas_data(packed_plist, os.path.join(output_path, "%s%s" % (texture_file_name, atlas_data_ext)),
-                                  self.atlas_format)
+            if save_atlas_data:
+                Utils.save_atlas_data(packed_plist, os.path.join(output_path, "%s%s" % (texture_file_name, atlas_data_ext)),
+                                      self.atlas_format)
             Utils.save_image(packed_image, os.path.join(
                 output_path, "%s%s" % (texture_file_name, self.texture_format)))
+
+            atlas_data.append(packed_plist)
+
+        return atlas_data
 
     def multi_pack(self, pack_args_list):
         """
@@ -217,7 +305,9 @@ class PackerInterface(object):
         pool_size = multiprocessing.cpu_count() * 2
         pool = multiprocessing.Pool(processes=pool_size)
 
-        pool.map(multi_pack_handler, zip(
+        result = pool.map(multi_pack_handler, zip(
             [self] * len(pack_args_list), pack_args_list))
         pool.close()
         pool.join()
+
+        return result

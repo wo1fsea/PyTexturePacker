@@ -70,7 +70,8 @@ class MaxRectsPacker(PackerInterface):
                             force_square=self.force_square,
                             border_padding=self.border_padding,
                             shape_padding=self.shape_padding,
-                            inner_padding=self.inner_padding
+                            inner_padding=self.inner_padding,
+                            crop_to_content=self.crop_atlas
                         )
                     )
                     best_atlas = len(atlas_list) - 1

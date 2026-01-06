@@ -22,7 +22,8 @@ class AtlasInterface(object):
     """
 
     def __init__(self, width=1, height=1, max_width=MAX_WIDTH, max_height=MAX_HEIGHT,
-                 force_square=False, border_padding=0, shape_padding=0, inner_padding=0):
+                 force_square=False, border_padding=0, shape_padding=0, inner_padding=0,
+                 crop_to_content=False):
         if force_square:
             width = height = max(width, height)
             max_width = max_height = max(max_width, max_height)
@@ -35,12 +36,22 @@ class AtlasInterface(object):
         self.inner_padding = inner_padding
 
         self.force_square = force_square
+        self.crop_to_content = crop_to_content
 
         self.image_rect_list = []
 
-    def dump_plist(self, texture_file_name="", input_base_path=None, atlas_format=ATLAS_FORMAT_PLIST):
+    @staticmethod
+    def _extract_path(path, input_base_path):
         import os
 
+        if input_base_path is None:
+            _, path = os.path.split(path)
+        else:
+            path = os.path.relpath(os.path.abspath(path), os.path.abspath(input_base_path))
+
+        return path
+
+    def dump_plist(self, aliases, texture_file_name="", input_base_path=None, atlas_format=ATLAS_FORMAT_PLIST):
         plist_data = {}
 
         frames = {}
@@ -53,12 +64,7 @@ class AtlasInterface(object):
                 center_offset = (image_rect.source_box[0] + width / 2. - image_rect.source_size[0] / 2.,
                                  - (image_rect.source_box[1] + height / 2. - image_rect.source_size[1] / 2.))
 
-            path = image_rect.image_path
-            if input_base_path is None:
-                _, path = os.path.split(path)
-            else:
-                path = os.path.relpath(os.path.abspath(
-                    path), os.path.abspath(input_base_path))
+            path = self._extract_path(image_rect.image_path, input_base_path)
 
             if atlas_format == ATLAS_FORMAT_PLIST:
                 frames[path] = dict(
@@ -83,6 +89,11 @@ class AtlasInterface(object):
                         w=image_rect.source_size[0], h=image_rect.source_size[1])
                 )
 
+            alias_list = aliases.get(id(image_rect), [])
+            for alias_path in alias_list:
+                alias_path = self._extract_path(alias_path, input_base_path)
+                frames[alias_path] = frames[path]
+
         plist_data["frames"] = frames
         if atlas_format == ATLAS_FORMAT_PLIST:
             plist_data["metadata"] = dict(
@@ -101,15 +112,36 @@ class AtlasInterface(object):
 
         return plist_data
 
-    def dump_image(self, bg_color=0xffffffff):
-        from PIL import Image
-        packed_image = Image.new('RGBA', self.size, bg_color)
+    def _get_cropped_size(self):
+        max_x = 0
+        max_y = 0
+
+        for image_rect in self.image_rect_list:
+            max_x = max(max_x, image_rect.right)
+            max_y = max(max_y, image_rect.bottom)
+
+        return max_x + self.border_padding + self.inner_padding, max_y + self.border_padding + self.inner_padding
+
+    def dump_image(self, bg_color=0xffffffff, draw_border=False):
+        from PIL import Image, ImageDraw
+
+        size = self.size
+        if self.crop_to_content:
+            size = self._get_cropped_size()
+
+        packed_image = Image.new('RGBA', size, bg_color)
+
+        if draw_border:
+            draw = ImageDraw.Draw(packed_image)
 
         for image_rect in self.image_rect_list:
             image = image_rect.image.crop()
             if image_rect.rotated:
                 image = image.transpose(Image.ROTATE_270)
-            packed_image.paste(
-                image, (image_rect.left, image_rect.top, image_rect.right, image_rect.bottom))
+
+            dest_rect = (image_rect.left, image_rect.top, image_rect.right, image_rect.bottom)
+            packed_image.paste(image, dest_rect)
+            if draw_border:
+                draw.rectangle(dest_rect, outline=(255, 0, 0, 255))
 
         return packed_image

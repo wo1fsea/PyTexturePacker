@@ -53,6 +53,13 @@ class ImageRect(Rect):
         else:
             return tuple(0, 0, self.width, self.height)
 
+    @property
+    def hash(self):
+        import hashlib
+
+        md5hash = hashlib.md5(self.image.tobytes())
+        return md5hash.hexdigest()
+
     def load_image(self, image_path):
         image = Image.open(image_path)
         self.image = image.copy()
@@ -68,6 +75,14 @@ class ImageRect(Rect):
 
         self._rotated = False
         self._trimmed = False
+
+    def scale(self, scale, scale_filter):
+        size = tuple(round(scale * dim) for dim in self.image.size)
+        self.image = self.image.resize(size, scale_filter)
+
+        self.width, self.height = self.image.size
+        self.source_size = self.image.size
+        self.source_box = (0, 0, self.width, self.height)
 
     def rotate(self):
         self._rotated = not self._rotated
@@ -113,6 +128,14 @@ class ImageRect(Rect):
         tmp._trimmed = self._trimmed
         tmp._extrude_size = self._extrude_size
         return tmp
+
+    def __eq__(self, other):
+        if self.image == other.image:
+            return True
+        elif self.image and other.image:
+            return self.image.tobytes() == other.image.tobytes()
+        else:
+            return (not self.image) == (not other.image)
 
 
 def main():
